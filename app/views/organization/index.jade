@@ -1,0 +1,215 @@
+extends ../layouts/defualt
+
+block title
+	title 组织结构管理 - #{pkg.name}
+
+block content
+	.row
+		.col-md-4.col-sm-8.col-xs-8.col-lg-6
+			button#create.btn.btn-success.btn-sm(type='button') 新建
+				i.glyphicon.glyphicon-asterisk
+			button#edit.btn.btn-warning.btn-sm(type='button') 修改
+				i.glyphicon.glyphicon-pencil
+			button#delete.btn.btn-danger.btn-sm(type='button') 删除
+				i.glyphicon.glyphicon-remove
+
+		.col-md-2.col-sm-4.col-xs-4.col-lg-2
+			input#q(type='text' placeholder='Search')
+		.col-md-2.col-sm-4.col-xs-4.col-lg-2
+			button#createRoot.btn.btn-info.btn-sm(type='button') 新建单位
+				i.glyphicon.glyphicon-asterisk
+	.row
+		.col-md-7.col-lg-8: #orgtree
+		.col-md-5.col-lg-4: #orginfo.hidden
+			form.form-horizontal(role='form')
+				fieldset
+					legend 节点信息
+					input#parent(name='parent' type='hidden')
+					.form-group
+						label.col-sm-2.control-label(for='name') 机构名称
+						.col-sm-10
+							input#name.form-control(name='name' type='text', placeholder='机构名称')
+					.form-group
+						label.col-sm-2.control-label(for='type') 机构类型
+						.col-sm-10
+							input#type.form-control(name='type' type='text', placeholder='机构类型')
+					.form-group
+						label.col-sm-2.control-label(for='manager') 机构负责人
+						.col-sm-10
+							input#manager.form-control(name='manager' type='text', placeholder='机构负责人')
+					.form-group
+						.col-sm-offset-2.col-sm-10
+							.pull-right
+								button.btn.btn-default(type='reset') 取消
+								button#save.btn.btn-primary(type='button') 保存
+
+block foot-script
+	script.
+		$(function () {
+			var nodes = !{JSON.stringify(nodes)};
+			$('#orgtree').jstree({
+				"core": {
+					"animation": 0,
+					"check_callback": true,
+					"themes": {"stripes": true},
+					'data': function (node, cb) {
+						if (node.id === "#") {
+							var ret = nodes.filter(function (e) {
+								return !e.parent;
+							}).map(function (e) {
+								return {
+									text: e.name,
+									type: e.type,
+									data: e,
+									"children": (e.children && e.children.length > 0)
+								};
+							});
+							cb(ret);
+						}
+						else {
+							var ret = nodes.filter(function (e) {
+								return e.parent && e.parent === node.data._id;
+							}).map(function (e) {
+								return {
+									text: e.name,
+									type: e.type,
+									data: e,
+									children: e.children && e.children.length > 0
+								};
+							});
+							cb(ret);
+						}
+					}
+				},
+				"types": {
+					"#": {"max_children": 10, "max_depth": 4, "valid_children": ["root"]},
+					"root": {"icon": "glyphicon glyphicon-tree-deciduous", "valid_children": ["default"]},
+					"default": {"icon": "glyphicon glyphicon-leaf","valid_children": ["default", "file"]},
+					"file": {"icon": "glyphicon glyphicon-leaf", "valid_children": []}
+				},
+				"contextmenu":{
+					items: {
+						create: {
+							label: "新建",
+							action: function(){}
+						},
+						edit: {
+							label: '修改',
+							action: function (){}
+						},
+						'delete': {
+							label: '删除',
+							action: function(){}
+						}
+					}
+				},
+				"plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
+			});
+
+			$('#create').click(function () {
+				var $orginfo = $('#orginfo');
+				var orgtree = $('#orgtree').jstree(true);
+				var sel = orgtree.get_selected(true);
+				if (!sel.length) {
+					return false;
+				}
+				sel = sel[0];
+				var $form = $orginfo.find('form')[0];
+				$form.parent.value = sel.data._id;
+				$form.name.value = '';
+				$form.manager.value = '';
+				$form.type.value = '';
+				$orginfo.removeClass('hidden');
+
+				$('#save').off("click").click(function () {
+					$.post('/organization', $orginfo.find('form').serialize(),
+									function (data) {
+										var newNode = data.node;
+										var orgtree = $('#orgtree').jstree(true);
+										orgtree.create_node(sel, {
+											text: newNode.name,
+											type: newNode.type,
+											data: newNode
+										});
+									}, "json");
+				});
+			});
+
+			$('#edit').click(function () {
+				var ot = $('#orgtree').jstree(true);
+				var sel = ot.get_selected(true);
+				if (!sel.length) {
+					return false;
+				}
+				sel = sel[0];
+				var $orginfo = $('#orginfo');
+				var $form = $orginfo.find('form');
+				var form = $form[0];
+				form.name.value = sel.data.name;
+				form.manager.value = sel.data.manager || '';
+				form.type.value = sel.data.type;
+				form.parent = sel.data.parent;
+
+				$('#save').off("click").click(function () {
+					$.ajax({
+						type: 'PUT',
+						url: '/organization/' + sel.data._id,
+						data: $form.serialize()
+					}).done(function (data) {
+						sel.data = data;
+						ot.rename_node(sel, sel.data.name);
+					});
+				});
+				$orginfo.removeClass('hidden');
+			});
+
+			$('#delete').click(function () {
+				var ot = $('#orgtree').jstree(true);
+				var sel = ot.get_selected(true);
+				if (!sel.length) {
+					return false;
+				}
+				sel = sel[0];
+				$.ajax({
+					type: 'DELETE',
+					url: '/organization/' + sel.data._id
+				}).done(function (msg) {
+					console.log(msg);
+					ot.delete_node(sel);
+				});
+			});
+
+			var to = false;
+			$('#q').keyup(function () {
+				if (to) {
+					clearTimeout(to);
+				}
+				to = setTimeout(function () {
+					var v = $('#q').val();
+					$('#orgtree').jstree(true).search(v);
+				}, 250);
+			});
+
+			$('#createRoot').click(function () {
+				var $orginfo = $('#orginfo');
+				var $form = $orginfo.find('form')[0];
+				$form.name.value = '';
+				$form.manager.value = '';
+				$form.type.value = 'root';
+
+				$('#save').off("click").click(function () {
+					$.post('/organization', $orginfo.find('form').serialize(),
+									function (data) {
+										console.log(data);
+										var newNode = data.node;
+										var orgtree = $('#orgtree').jstree(true);
+										orgtree.create_node('#', {
+											text: newNode.name,
+											type: newNode.type,
+											data: newNode
+										});
+									}, "json");
+				});
+				$orginfo.removeClass('hidden');
+			});
+		});

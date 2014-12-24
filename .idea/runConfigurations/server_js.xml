@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="server.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/bin/node" path-to-js-file="server.js" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="DEBUG" value="hiskyCrm" />
+      <env name="NODE_PATH" value="./config:./app/controllers" />
+      <env name="NODE_ENV" value="development ./node_modules/.bin/nodemon" />
+    </envs>
+    <browser url="http://localhost:3000/" />
+    <method />
+  </configuration>
+</component>

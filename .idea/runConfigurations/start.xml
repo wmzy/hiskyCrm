@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="start" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/bin/node" path-to-js-file="server.js" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="DEBUG" value="hiskyCrm" />
+      <env name="NODE_PATH" value="./config:./app/controllers" />
+      <env name="NODE_ENV" value="development" />
+    </envs>
+    <browser start="true" with-js-debugger="true" url="http://localhost:3000/" />
+    <RunnerSettings RunnerId="Basic" />
+    <RunnerSettings RunnerId="debuggableProgram" />
+    <ConfigurationWrapper RunnerId="Basic" />
+    <ConfigurationWrapper RunnerId="debuggableProgram" />
+    <method />
+  </configuration>
+</component>

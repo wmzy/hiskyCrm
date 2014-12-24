@@ -1,0 +1,18 @@
+doctype html
+html
+	head
+		include ../includes/head
+	body
+		include ../includes/header
+
+		#wrap.container-fluid
+			.page-header
+				block main
+			.messages
+				include ../includes/messages
+			.content
+				block content
+
+		#footer
+			include ../includes/footer
+		include ../includes/foot

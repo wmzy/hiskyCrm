@@ -1,0 +1,27 @@
+extends auth
+
+block auth
+	form(action='/signup' method='post' role='form' class='form-horizontal')
+		input(type='hidden' name='_csrf' value=csrf_token)
+
+		.form-group
+			label(for='name' class='col-sm-2 control-label') 姓名
+			.col-sm-10: input#name.form-control(type='text' name='name' placeholder='Full name' value=user.name)
+
+		.form-group
+			label(for='email' class='col-sm-2 control-label') 邮箱
+			.col-sm-10: input(type='text' name='email' placeholder='Email' value=user.email id='email' class='form-control')
+
+		.form-group
+			label(for='username' class='col-sm-2 control-label') 用户名
+			.col-sm-10: input#username.form-control(type='text' name='username' placeholder='Username' value=user.username)
+
+		.form-group
+			label(for='password' class='col-sm-2 control-label') 密码
+			.col-sm-10: input#password.form-control(type='password' name='password' placeholder='Password')
+
+		.form-group: div(class='col-sm-offset-2 col-sm-10')
+			button(class='btn btn-primary' type='submit') 注册
+			= ' or '
+			a(href='/login' class='show-login') 登录
+

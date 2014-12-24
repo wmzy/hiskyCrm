@@ -1,0 +1,20 @@
+//
+Created by wmzy on 14-12-5.
+extends auth
+
+block auth
+	form(action='/users/session' method='post' role='form' class='form-form-horizontal')
+		input(type='hidden' name='_csrf' value=csrf_token)
+		p(class='col-sm-offset-2 error') #{message}
+		.form-group
+			label(for='email' class='col-sm-2 control-label') 邮箱
+			.col-sm-10
+				input#email.form-control(type='email' placeholder='Email' name='email')
+
+		.form-group: label(for='password' class='col-sm-2 control-label') 密码
+		.col-sm-10: input#password.form-control(type='password' placeholder='Password' name='password')
+
+		.form-group: div(class='col-sm-offset-2 col-sm-10')
+			button(class='btn btn-primary' type='submit') 登录
+			= ' or '
+			a(href='/signup' class='show-signup') 注册
