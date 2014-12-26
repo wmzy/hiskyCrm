@@ -3,19 +3,26 @@
  */
 
 var mongoose = require('mongoose');
-var OrganizationNode = mongoose.model('OrganizationNode');
 var utils = require('../../lib/utils');
 var extend = require('util')._extend;
 var winston = require('winston');
 var async = require('async');
 
+var OrganizationNode = mongoose.model('OrganizationNode');
+var User = mongoose.model('User');
+
 exports.index = function (req, res, next) {
-	OrganizationNode.find(function (err, data) {
+	async.parallel([function (callback) {
+		OrganizationNode.find(callback);
+	}, function (callback) {
+		User.find(callback);
+	}], function (err, results) {
 		if (err) {
 			winston.error(err);
 			return next(err);
 		}
-		res.render('organization/index', {nodes: data});
+
+		res.render('organization/index', {nodes: results[0], users: results[1]});
 	});
 };
 
@@ -48,11 +55,13 @@ exports.create = function (req, res) {
 
 exports.update = function (req, res) {
 	OrganizationNode.findById(req.params.orgId, function (err, org) {
-		if (err)
-			res.flash('err', err);
+		if (err) {
+			winston.error(err);
+			return res.json(402, err);
+		}
 
-		if (org.parent && org.parent !== req.body.parent) {
-			return req.flash('err', '父节点出错');
+		if (org.parent && org.parent.toString() !== req.body.parent) {
+			return res.json(422, {message: '父节点出错', parent: org.parent});
 		}
 		org.name = req.body.name;
 		org.type = req.body.type;

@@ -146,9 +146,10 @@ block foot-script
 				var $form = $orginfo.find('form');
 				var form = $form[0];
 				form.name.value = sel.data.name;
-				form.manager.value = sel.data.manager || '';
+				form.manager.selectize.clear();
+				form.manager.selectize.addItem(sel.data.manager);
 				form.type.value = sel.data.type;
-				form.parent = sel.data.parent;
+				form.parent.value = sel.data.parent;
 
 				$('#save').off("click").click(function () {
 					$.ajax({
@@ -211,5 +212,31 @@ block foot-script
 									}, "json");
 				});
 				$orginfo.removeClass('hidden');
+			});
+
+			$('#manager').selectize({
+				persist: false,
+				maxItems: 1,
+				valueField: '_id',
+				labelField: 'name',
+				searchField: ['name', 'username', 'email'],
+				create: false,
+				options: !{JSON.stringify(users)},
+				render: {
+					item: function(item, escape) {
+						return '<div>' +
+										(item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+										(item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+										'</div>';
+					},
+					option: function(item, escape) {
+						var label = item.name || item.email;
+						var caption = item.name ? item.email : null;
+						return '<div>' +
+										'<span class="">' + escape(label) + ' | </span>' +
+										(caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+										'</div>';
+					}
+				}
 			});
 		});

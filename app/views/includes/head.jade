@@ -14,3 +14,9 @@ block head
 	link(rel='stylesheet' href='/css/app.css')
 	link(rel='stylesheet' href='/css/selectize.bootstrap3.css')
 	link(href='/css/themes/default/style.min.css' rel='stylesheet')
+
+block requirejs
+
+mixin scripts(foot, async)
+	block requirejs
+		script#scripts(data-main='/js/main' data-foot=(foot || '') data-async=(async || '') src='/js/lib/require.js' async=true)

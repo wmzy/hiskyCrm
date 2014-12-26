@@ -1,0 +1,3 @@
+mixin scripts(foot, async)
+   block requirejs
+      script#scripts(data-main='/js/main' data-foot=(foot || '') data-async=(async || '') src='/js/lib/require.js' async=true)
