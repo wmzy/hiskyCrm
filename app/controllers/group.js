@@ -3,11 +3,13 @@
  */
 
 var mongoose = require('mongoose');
-var Group = mongoose.model('Group');
 var utils = require('../../lib/utils');
 var extend = require('util')._extend;
 var winston = require('winston');
 var async = require('async');
+
+var Group = mongoose.model('Group');
+var User = mongoose.model('User');
 
 exports.index = function (req, res, next) {
 	Group.find(function (err, data) {
@@ -36,37 +38,36 @@ exports.create = function (req, res) {
 	});
 };
 
-exports.edit = function (req, res) {
-	Group.findById(req.params.groupId)
-		.exec(function (err, group) {
-			if (err) {
-				winston.error(err);
-				return next(err);
-			}
+exports.edit = function (req, res, next) {
+	async.parallel([function (callback) {
+		User.find(callback);
+	}, function (callback) {
+		Group.findById(req.params.groupId, callback);
+	}], function (err, results) {
+		if (err) {
+			winston.error(err);
+			return next(err);
+		}
 
-			res.render(group, 'group/editor');
-		});
+		res.render('group/edit', {group: results[1], users: results[0]});
+	});
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, next) {
 	Group.findById(req.params.groupId, function (err, group) {
-		if (err)
-			res.flash('err', err);
-
-		if (group.parent && group.parent !== req.body.parent) {
-			return req.flash('err', '父节点出错');
+		if (err) {
+			winston.error(err);
+			return next(err);
 		}
-		group.name = req.body.name;
-		group.type = req.body.type;
-		group.manager = req.body.manager || undefined;
 
+		group = extend(group, req.body);
 		group.save(function (err) {
 			if (err) {
+				winston.error(err);
 				req.flash('err', err);
-				return res.json(err);
 			}
 
-			res.json(group);
+			res.redirect('/group');
 		});
 	});
 };

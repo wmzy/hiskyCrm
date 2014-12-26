@@ -20,14 +20,14 @@ var oAuthTypes = [
  */
 
 var UserSchema = new Schema({
-    email: {type: String, required: true},
-    username: {type: String, required: true},
+    email: {type: String, required: true, index: true, unique: true},
+    username: {type: String, required: true, index: true, unique: true},
     active: {type: Boolean, default: true},
     hashed_password: {type: String, default: ''},
     salt: {type: String, default: ''},
     lastAccess: {type: Date},
 
-    name: {type: String, required: true},
+    name: {type: String, required: true, index: true},
     gender: {type: String, enum: ['男', '女']},
     workAddress: {type: String, default: ''},
     workPhones: {
@@ -45,6 +45,16 @@ var UserSchema = new Schema({
 //    google: {},
 //    linkedin: {},
     otherInfo: {type: String, default: ''}
+});
+
+/**
+ * Full-Text Search Index
+ */
+
+UserSchema.index({
+    name: 'text',
+    username: 'text',
+    email: 'text'
 });
 
 /**

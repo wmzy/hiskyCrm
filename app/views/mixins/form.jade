@@ -1,0 +1,26 @@
+//- http://tjholowaychuk.tumblr.com/post/7590787973/jade-mixins-includes
+	https://github.com/jossmac/jade-field-mixins
+
+mixin field(type, name, label, placeholder, value)
+	.form-group
+		label.col-md-3.control-label(for=name)= label
+		.col-md-9
+			input.form-control(id=name, name=name, type=type, placeholder=placeholder, value=value)
+
+mixin selectUser
+	block foot-script
+
+mixin csrf
+	input(type='hidden', name='_csrf', value=csrfToken)
+
+mixin method-fix
+	script.
+		(function () {
+			var forms = document.getElementsByTagName('form');
+			for (var i = 0; i < forms.length; ++i) {
+				if (forms[i].method.toLowerCase() === 'put') {
+					forms[i] = 'post';
+					// add _method
+				}
+			}
+		})();

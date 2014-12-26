@@ -40,6 +40,7 @@ module.exports = function (app, passport) {
             failureFlash: 'Invalid email or password.'
         }), users.session);
     app.get('/users/manage', auth.requiresLogin, users.manage);
+    app.get('/users/search/:query', auth.requiresLogin, users.search);
     app.get('/users/:userId', users.show);
 
     app.param('userId', users.load);
@@ -47,7 +48,7 @@ module.exports = function (app, passport) {
     // group routes
     app.get('/group', group.index);
     app.get('/group/new', group.new);
-    app.get('/group/edit', group.edit);
+    app.get('/group/edit/:groupId', group.edit);
     app.put('/group/:groupId', group.update);
     app.post('/group', group.create);
     app.delete('/group/:groupId', group.delete);

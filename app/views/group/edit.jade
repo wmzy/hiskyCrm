@@ -1,0 +1,69 @@
+extends ../layouts/defualt
+
+block title
+	title 修改组 - #{pkg.name}
+
+block content
+	.row
+		.col-md-6.col-md-offset-3
+			.well.well-sm
+				form.form-horizontal(action='/group/' + group._id, method='post')
+					fieldset
+						legend.text-center 修改组
+						input.hidden(name='_csrf' value=csrf_token)
+						input.hidden(name='_method' value='put')
+						.form-group
+							label.col-md-3.control-label(for='name') 名称
+							.col-md-9
+								input#name.form-control(name='name', value=group.name, type='text', placeholder='组名称')
+						.form-group
+							label.col-md-3.control-label(for='description') 描述
+							.col-md-9
+								textarea#description.form-control(name='description', placeholder='请输入组的描述......', rows='5')= group.description
+						.form-group
+							label.col-md-3.control-label(for='members') 成员
+							.col-md-9
+								input#members.form-control(name='members', placeholder='请选择......', data-data=users)
+						.form-group
+							.col-md-12.text-right
+								button#cancel.btn.btn-default(type='button') 取消
+								button.btn.btn-primary.btn-lg(type='submit') 保存
+
+block foot-script
+	script.
+		$(function () {
+			$('#cancel').click(function () {
+				if (history.length) {
+					history.back();
+				} else {
+					window.close();
+				}
+			});
+
+			$('#members').selectize({
+				persist: false,
+				maxItems: null,
+				valueField: '_id',
+				labelField: 'name',
+				searchField: ['name', 'username', 'email'],
+				create: false,
+				options: !{JSON.stringify(users)},
+				render: {
+					item: function(item, escape) {
+						return '<div>' +
+										(item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+										(item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+										'</div>';
+					},
+					option: function(item, escape) {
+						var label = item.name || item.email;
+						var caption = item.name ? item.email : null;
+						return '<div>' +
+										'<span class="">' + escape(label) + ' | </span>' +
+										(caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+										'</div>';
+					}
+				}
+			});
+		});
+

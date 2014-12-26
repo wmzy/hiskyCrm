@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -16,16 +15,16 @@ var utils = require('../../lib/utils');
  */
 
 exports.load = function (req, res, next, id) {
-  var options = {
-    criteria: { _id : id }
-  };
-  User.load(options, function (err, user) {
-    if (err) return res.json(422, err); //next(err);
-    if (err) return next(err);
-    if (!user) return next(new Error('Failed to load User ' + id));
-    req.profile = user;
-    next();
-  });
+	var options = {
+		criteria: {_id: id}
+	};
+	User.load(options, function (err, user) {
+		if (err) return res.json(422, err); //next(err);
+		if (err) return next(err);
+		if (!user) return next(new Error('Failed to load User ' + id));
+		req.profile = user;
+		next();
+	});
 };
 
 /**
@@ -33,45 +32,45 @@ exports.load = function (req, res, next, id) {
  */
 
 exports.create = function (req, res) {
-  req.body.jobPosition =  req.body.jobPosition || undefined;
-  var user = new User(req.body);
-  user.save(function (err) {
-    if (err) {
-      winston.error(err);
-      return res.json(422, err);
-    }
+	req.body.jobPosition = req.body.jobPosition || undefined;
+	var user = new User(req.body);
+	user.save(function (err) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, err);
+		}
 
-    // manually login the user once successfully signed up
-    res.json(user);
-  });
+		// manually login the user once successfully signed up
+		res.json(user);
+	});
 };
 
 exports.update = function (req, res) {
-  delete req.body.username;
+	delete req.body.username;
 
-  async.waterfall([function (callback) {
-    User.findById(req.params.userId, callback);
-  }, function (user, callback) {
-    user = extend(user, req.body);
-    user.save(callback);
-  }], function (err, user) {
-    if (err) {
-      winston.error(err);
-      return res.json(422,{err: err});
-    }
-    return res.json(user);
-  });
+	async.waterfall([function (callback) {
+		User.findById(req.params.userId, callback);
+	}, function (user, callback) {
+		user = extend(user, req.body);
+		user.save(callback);
+	}], function (err, user) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, {err: err});
+		}
+		return res.json(user);
+	});
 };
 
 exports.delete = function (req, res) {
-  User.findByIdAndRemove(req.params.userId, function (err) {
-    if (err) {
-      winston.error(err);
-      return res.json(422, err);
-    }
+	User.findByIdAndRemove(req.params.userId, function (err) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, err);
+		}
 
-    res.send(200);
-  });
+		res.send(200);
+	});
 };
 
 /**
@@ -79,47 +78,63 @@ exports.delete = function (req, res) {
  */
 
 exports.show = function (req, res) {
-  var user = req.profile;
-  res.render('users/show', {
-    title: user.name,
-    user: user
-  });
+	var user = req.profile;
+	res.render('users/show', {
+		title: user.name,
+		user: user
+	});
 };
 
 exports.manage = function (req, res, next) {
-  winston.info('manage');
-  async.parallel([function (callback) {
-    OrganizationNode.find(callback);
-  }, function (callback) {
-    User.find(callback);
-  }], function (err, results) {
-    if (err) {
-      winston.error(err);
-      return next(err);
-    }
+	async.parallel([function (callback) {
+		OrganizationNode.find(callback);
+	}, function (callback) {
+		User.find(callback);
+	}], function (err, results) {
+		if (err) {
+			winston.error(err);
+			return next(err);
+		}
 
-    res.render('users/manage', {orgNodes: results[0], users: results[1]});
-  });
+		res.render('users/manage', {orgNodes: results[0], users: results[1]});
+	});
+};
+
+exports.search = function (req, res) {
+	console.log(req.params.query);
+	User.find(
+		// {$text: {$search: req.params.query}},
+		// {score: {$meta: 'textScore'}}
+	)// .sort({score: {$meta: 'textScore'}})
+		.exec(function (err, users) {
+			if (err) {
+				console.log(err);
+				winston.error(err);
+				return res.json(422, err);
+			}
+
+			res.json(users);
+		});
 };
 
 exports.signin = function (req, res, next) {
-  var user = new User(req.body);
-  user.provider = 'local';
-  user.save(function (err) {
-    if (err) {
-      return res.render('users/signup', {
-        error: utils.errors(err.errors),
-        user: user,
-        title: 'Sign up'
-      });
-    }
+	var user = new User(req.body);
+	user.provider = 'local';
+	user.save(function (err) {
+		if (err) {
+			return res.render('users/signup', {
+				error: utils.errors(err.errors),
+				user: user,
+				title: 'Sign up'
+			});
+		}
 
-    // manually login the user once successfully signed up
-    req.logIn(user, function (err) {
-      if (err) return next(err);
-      return res.redirect('/');
-    });
-  });
+		// manually login the user once successfully signed up
+		req.logIn(user, function (err) {
+			if (err) return next(err);
+			return res.redirect('/');
+		});
+	});
 };
 
 /**
@@ -133,9 +148,9 @@ exports.authCallback = login;
  */
 
 exports.login = function (req, res) {
-  res.render('users/login', {
-    title: 'Login'
-  });
+	res.render('users/login', {
+		title: 'Login'
+	});
 };
 
 /**
@@ -143,10 +158,10 @@ exports.login = function (req, res) {
  */
 
 exports.signup = function (req, res) {
-  res.render('users/signup', {
-    title: 'Sign up',
-    user: new User()
-  });
+	res.render('users/signup', {
+		title: 'Sign up',
+		user: new User()
+	});
 };
 
 /**
@@ -154,8 +169,8 @@ exports.signup = function (req, res) {
  */
 
 exports.logout = function (req, res) {
-  req.logout();
-  res.redirect('/login');
+	req.logout();
+	res.redirect('/login');
 };
 
 /**
@@ -168,8 +183,8 @@ exports.session = login;
  * Login
  */
 
-function login (req, res) {
-  var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
-  delete req.session.returnTo;
-  res.redirect(redirectTo);
+function login(req, res) {
+	var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
+	delete req.session.returnTo;
+	res.redirect(redirectTo);
 }

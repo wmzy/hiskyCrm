@@ -15,12 +15,18 @@ var ObjectId = Schema.Types.ObjectId;
 var GroupSchema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, default: ''},
+	members: [{type: ObjectId, ref: 'User'}],
 	roles: [{type: ObjectId, ref: 'Role'}]
 });
 
 /**
  * Setters
  */
+
+GroupSchema.path('members').set(function (v) {
+	console.log('set:',v);
+	return v ? v.split(',') : undefined;
+});
 
 GroupSchema.path('roles').set(function (v) {
 	return v === '' ? undefined : v;
@@ -35,6 +41,10 @@ GroupSchema.path('roles').set(function (v) {
  * Validations
  */
 
+GroupSchema.path('members').validate(function (v) {
+	console.log('validate:',v);
+	return true;
+});
 
 /**
  * Pre-save hook
