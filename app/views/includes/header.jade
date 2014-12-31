@@ -14,11 +14,25 @@ nav(role='navigation' class='navbar navbar-default navbar-fixed-top')
 						b.caret
 					ul.dropdown-menu
 						li: a(href='/organization') 部门管理
+						//- li: a(href='/role') 角色管理
 						li: a(href='/group') 组管理
 						li: a(href='/users/manage') 用户管理
+				li.dropdown
+					a.dropdown-toggle.dropdown(href='#' data-toggle='dropdown') 装机管理
+						b.caret
+					ul.dropdown-menu
+						li: a(href='/organization') 装机申请
+						li: a(href='/group') 装机审批
+						li: a(href='/users/manage') 装机派工
+						li: a(href='/users/manage') 装机记录
+						li: a(href='/users/manage') 装机反馈
+				li.dropdown
+					a.dropdown-toggle.dropdown(href='#' data-toggle='dropdown') 基础功能
+						b.caret
+					ul.dropdown-menu
+						li: a(href='/schema') 模板管理
+						li: a(href='/workflow') 流程管理
 
-				li(class= isActive('/articles/new') ? 'active' : '')
-					a(href='/articles/new' title='new article') 新建
 			ul(class='nav navbar-nav navbar-right')
 				if req.isAuthenticated()
 					li(class=isActive('/users/' + req.user.id) ? 'active' : '')

@@ -1,0 +1,50 @@
+extends ../layouts/defualt
+
+block title
+   title 模板管理 - #{pkg.name}
+
+block content
+   div.row.col-md-6.col-md-offset-2.custyle
+      table.table.table-striped.custab
+         thead
+            a.btn.btn-primary.btn-xs.pull-right(href='/schema/new')
+               b +
+               | 添加
+            tr
+               th 名称
+               th 描述
+               th 所有者
+               th.text-center 操作
+      each schema in schemas
+         tr
+            td #{schema.name}
+            td #{schema.description}
+            td #{schema.owner}
+            td.text-center
+               a.btn.btn-info.btn-xs(href='/schema/edit/' + schema._id)
+                  span.glyphicon.glyphicon-edit
+                  | 修改
+               a.btn.btn-danger.btn-xs(data-id=schema._id.toString())
+                  span.glyphicon.glyphicon-remove
+                  | 删除
+
+block foot-script
+   script.
+      require(['jquery'], function ($) {
+         $(function () {
+            $('a[data-id]').click(function () {
+               var $self = $(this);
+               $.ajax({
+                  type: 'DELETE',
+                  url: '/schema/' + $self.data('id')
+               }).done(function () {
+                  var $tr = $self.parents('tr')[0];
+                  $tr.remove();
+               }).fail(function (jqxhr) {
+                  console.log(jqxhr.status);
+                  console.log(jqxhr.responseJSON);
+               });
+            });
+         });
+      });
+

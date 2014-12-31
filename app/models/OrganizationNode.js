@@ -9,11 +9,11 @@ var OrganizationNodeSchema = mongoose.Schema({
     manager: {type: ObjectId, ref: 'Employees'},
     users: [{type: ObjectId, ref: 'Users'}],
     createdBy: {
-        user: {type: ObjectId, ref: 'Users'},
+        user: {type: ObjectId, ref: 'User'},
         date: {type: Date, default: Date.now}
     },
     editedBy: {
-        user: {type: ObjectId, ref: 'Users'},
+        user: {type: ObjectId, ref: 'User'},
         date: {type: Date}
     },
     nestingLevel: {type: Number, default: 0},
