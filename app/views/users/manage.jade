@@ -86,171 +86,173 @@ block content
 
 block foot-script
 	script.
-		$(function () {
-			var orgNodes = !{JSON.stringify(orgNodes)};
-			var users = !{JSON.stringify(users)};
-			$('#orgtree').jstree({
-				"core": {
-					"animation": 0,
-					"check_callback": true,
-					"themes": {"stripes": true},
-					'data': function (node, cb) {
-						if (node.id === "#") {
-							var ret = orgNodes.filter(function (e) {
-								return !e.parent;
-							}).map(function (e) {
-								return {
-									text: e.name,
-									type: e.type,
-									data: e,
-									"children": true || e.children && e.children.length > 0
-								};
-							});
-							cb(ret);
-						}
-						else {
-							var ret = orgNodes.filter(function (e) {
-								return e.parent && e.parent === node.data._id;
-							}).map(function (e) {
-								return {
-									text: e.name,
-									type: e.type,
-									data: e,
-									children: true || e.children && e.children.length > 0
-								};
-							});
-							ret = users.filter(function (user) {
-								return user.department && user.department === node.data._id;
-							}).map(function (user) {
-								return {
-									text: user.name,
-									type: 'user',
-									data: user,
-									children: false
-								};
-							}).concat(ret);
-							cb(ret);
-						}
-					}
-				},
-				"types": {
-					"#": {"max_children": 10, "max_depth": 4, "valid_children": ["root"]},
-					"root": {"icon": "glyphicon glyphicon-tree-deciduous", "valid_children": ["default"]},
-					"default": {"icon": "glyphicon glyphicon-leaf", "valid_children": ["default", "user"]},
-					"user": {"icon": "glyphicon glyphicon-user", "valid_children": []}
-				},
-				"contextmenu": {
-					items: {
-						create: {
-							label: "新建",
-							action: function () {
+		require(['jquery', 'jstree', 'selectize'], function ($) {
+			$(function () {
+				var orgNodes = !{JSON.stringify(orgNodes)};
+				var users = !{JSON.stringify(users)};
+				$('#orgtree').jstree({
+					"core": {
+						"animation": 0,
+						"check_callback": true,
+						"themes": {"stripes": true},
+						'data': function (node, cb) {
+							if (node.id === "#") {
+								var ret = orgNodes.filter(function (e) {
+									return !e.parent;
+								}).map(function (e) {
+									return {
+										text: e.name,
+										type: e.type,
+										data: e,
+										"children": true || e.children && e.children.length > 0
+									};
+								});
+								cb(ret);
 							}
-						},
-						edit: {
-							label: '修改',
-							action: function () {
-							}
-						},
-						'delete': {
-							label: '删除',
-							action: function () {
+							else {
+								var ret = orgNodes.filter(function (e) {
+									return e.parent && e.parent === node.data._id;
+								}).map(function (e) {
+									return {
+										text: e.name,
+										type: e.type,
+										data: e,
+										children: true || e.children && e.children.length > 0
+									};
+								});
+								ret = users.filter(function (user) {
+									return user.department && user.department === node.data._id;
+								}).map(function (user) {
+									return {
+										text: user.name,
+										type: 'user',
+										data: user,
+										children: false
+									};
+								}).concat(ret);
+								cb(ret);
 							}
 						}
-					}
-				},
-				"plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
-			});
-
-			$('#create').click(function () {
-				var $userInfo = $('#userInfo');
-				var ot = $('#orgtree').jstree(true);
-				var sel = ot.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				var $form = $userInfo.find('form')[0];
-				$form.department.value = sel.data._id;
-				$form.name.value = '';
-				$userInfo.removeClass('hidden');
-
-				$('#save').off("click").click(function () {
-					$.post('/users', $userInfo.find('form').serialize(),
-									function (user) {
-										var ot = $('#orgtree').jstree(true);
-										ot.create_node(sel, {
-											text: user.name,
-											type: 'user',
-											data: user
-										});
-									}, "json");
+					},
+					"types": {
+						"#": {"max_children": 10, "max_depth": 4, "valid_children": ["root"]},
+						"root": {"icon": "glyphicon glyphicon-tree-deciduous", "valid_children": ["default"]},
+						"default": {"icon": "glyphicon glyphicon-leaf", "valid_children": ["default", "user"]},
+						"user": {"icon": "glyphicon glyphicon-user", "valid_children": []}
+					},
+					"contextmenu": {
+						items: {
+							create: {
+								label: "新建",
+								action: function () {
+								}
+							},
+							edit: {
+								label: '修改',
+								action: function () {
+								}
+							},
+							'delete': {
+								label: '删除',
+								action: function () {
+								}
+							}
+						}
+					},
+					"plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
 				});
-			});
 
-			$('#edit').click(function () {
-				var ot = $('#orgtree').jstree(true);
-				var sel = ot.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				var $userInfo = $('#userInfo');
-				var $form = $userInfo.find('form');
-				var form = $form[0];
-				form.username.value = sel.data.username;
-				form.password.value = sel.data.password;
-				form.email.value = sel.data.email;
-				form.department.value = sel.data.department;
-				form.state.value = sel.data.active;
-				form.name.value = sel.data.name;
-				form.gender.value = sel.data.gender;
-				form.jobPosition.value = sel.data.jobPosition;
+				$('#create').click(function () {
+					var $userInfo = $('#userInfo');
+					var ot = $('#orgtree').jstree(true);
+					var sel = ot.get_selected(true);
+					if (!sel.length) {
+						return false;
+					}
+					sel = sel[0];
+					var $form = $userInfo.find('form')[0];
+					$form.department.value = sel.data._id;
+					$form.name.value = '';
+					$userInfo.removeClass('hidden');
 
-				$('#save').off("click").click(function () {
-					$.ajax({
-						type: 'PUT',
-						url: '/users/' + sel.data._id,
-						data: $form.serialize()
-					}).done(function (user) {
-						sel.data = user;
-						ot.rename_node(sel, sel.data.name);
-					}).fail(function (jqxhr, textStatus, errorThrown) {
-						console.log(jqxhr, textStatus, errorThrown);
+					$('#save').off("click").click(function () {
+						$.post('/users', $userInfo.find('form').serialize(),
+										function (user) {
+											var ot = $('#orgtree').jstree(true);
+											ot.create_node(sel, {
+												text: user.name,
+												type: 'user',
+												data: user
+											});
+										}, "json");
 					});
 				});
-				$userInfo.removeClass('hidden');
-			});
 
-			$('#delete').click(function () {
-				var ot = $('#orgtree').jstree(true);
-				var sel = ot.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				if (sel.type !== 'user') {
-					return false;
-				}
+				$('#edit').click(function () {
+					var ot = $('#orgtree').jstree(true);
+					var sel = ot.get_selected(true);
+					if (!sel.length) {
+						return false;
+					}
+					sel = sel[0];
+					var $userInfo = $('#userInfo');
+					var $form = $userInfo.find('form');
+					var form = $form[0];
+					form.username.value = sel.data.username;
+					form.password.value = sel.data.password;
+					form.email.value = sel.data.email;
+					form.department.value = sel.data.department;
+					form.state.value = sel.data.active;
+					form.name.value = sel.data.name;
+					form.gender.value = sel.data.gender;
+					form.jobPosition.value = sel.data.jobPosition;
 
-				$.ajax({
-					type: 'DELETE',
-					url: '/users/' + sel.data._id
-				}).done(function () {
-					ot.delete_node(sel);
-				}).fail(function (jqxhr) {
-					console.log(jqxhr.status);
-					console.log(jqxhr.responseJSON);
+					$('#save').off("click").click(function () {
+						$.ajax({
+							type: 'PUT',
+							url: '/users/' + sel.data._id,
+							data: $form.serialize()
+						}).done(function (user) {
+							sel.data = user;
+							ot.rename_node(sel, sel.data.name);
+						}).fail(function (jqxhr, textStatus, errorThrown) {
+							console.log(jqxhr, textStatus, errorThrown);
+						});
+					});
+					$userInfo.removeClass('hidden');
 				});
-			});
 
-			var to = false;
-			$('#q').keyup(function () {
-				if (to) {
-					clearTimeout(to);
-				}
-				to = setTimeout(function () {
-					var v = $('#q').val();
-					$('#orgtree').jstree(true).search(v);
-				}, 250);
+				$('#delete').click(function () {
+					var ot = $('#orgtree').jstree(true);
+					var sel = ot.get_selected(true);
+					if (!sel.length) {
+						return false;
+					}
+					sel = sel[0];
+					if (sel.type !== 'user') {
+						return false;
+					}
+
+					$.ajax({
+						type: 'DELETE',
+						url: '/users/' + sel.data._id
+					}).done(function () {
+						ot.delete_node(sel);
+					}).fail(function (jqxhr) {
+						console.log(jqxhr.status);
+						console.log(jqxhr.responseJSON);
+					});
+				});
+
+				var to = false;
+				$('#q').keyup(function () {
+					if (to) {
+						clearTimeout(to);
+					}
+					to = setTimeout(function () {
+						var v = $('#q').val();
+						$('#orgtree').jstree(true).search(v);
+					}, 250);
+				});
 			});
 		});

@@ -29,6 +29,9 @@
   "es5": true,
   "esnext": true,
   "globals": { /* custom */
+    "window": false,
+    "document": false,
+    "history": false,
     /* MOCHA: http://stackoverflow.com/a/19572515/130638 */
     "describe"   : false,
     "it"         : false,

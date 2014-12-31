@@ -1,0 +1,24 @@
+<script src="/js/lib/require.min.js"></script><script>require.config({
+	baseUrl: '/js',
+	paths: {
+		'jquery': 'lib/jquery-2.1.1.min',
+		'bootstrap': 'lib/bootstrap.min',
+		'jstree': 'lib/jstree.min',
+		'selectize': 'lib/selectize.min'
+	},
+	shim: {
+		'selectize': {
+			deps: ['jquery']
+		},
+		'bootstrap': {
+			deps: ['jquery']
+		}
+	}
+});
+
+require(['jquery', 'bootstrap'], function ($){
+	$.ajaxPrefilter(function (options, _, xhr) {
+		if (!xhr.crossDomain && options.type !== 'GET')
+			xhr.setRequestHeader('X-CSRF-Token', '');
+	});
+});</script>

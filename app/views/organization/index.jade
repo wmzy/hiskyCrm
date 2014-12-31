@@ -45,198 +45,203 @@ block content
 
 block foot-script
 	script.
-		$(function () {
-			var nodes = !{JSON.stringify(nodes)};
-			$('#orgtree').jstree({
-				"core": {
-					"animation": 0,
-					"check_callback": true,
-					"themes": {"stripes": true},
-					'data': function (node, cb) {
-						if (node.id === "#") {
-							var ret = nodes.filter(function (e) {
-								return !e.parent;
-							}).map(function (e) {
-								return {
-									text: e.name,
-									type: e.type,
-									data: e,
-									"children": (e.children && e.children.length > 0)
-								};
-							});
-							cb(ret);
+		require(['jquery', 'jstree', 'selectize'], function ($) {
+			$(function () {
+				var nodes = !{JSON.stringify(nodes)};
+				$('#orgtree').jstree({
+					"core": {
+						"animation": 0,
+						"check_callback": true,
+						"themes": {"stripes": true},
+						'data': function (node, cb) {
+							if (node.id === "#") {
+								var ret = nodes.filter(function (e) {
+									return !e.parent;
+								}).map(function (e) {
+									return {
+										text: e.name,
+										type: e.type,
+										data: e,
+										"children": (e.children && e.children.length > 0)
+									};
+								});
+								cb(ret);
+							}
+							else {
+								var ret = nodes.filter(function (e) {
+									return e.parent && e.parent === node.data._id;
+								}).map(function (e) {
+									return {
+										text: e.name,
+										type: e.type,
+										data: e,
+										children: e.children && e.children.length > 0
+									};
+								});
+								cb(ret);
+							}
 						}
-						else {
-							var ret = nodes.filter(function (e) {
-								return e.parent && e.parent === node.data._id;
-							}).map(function (e) {
-								return {
-									text: e.name,
-									type: e.type,
-									data: e,
-									children: e.children && e.children.length > 0
-								};
-							});
-							cb(ret);
+					},
+					"types": {
+						"#": {"max_children": 10, "max_depth": 4, "valid_children": ["root"]},
+						"root": {"icon": "glyphicon glyphicon-tree-deciduous", "valid_children": ["default"]},
+						"default": {"icon": "glyphicon glyphicon-leaf", "valid_children": ["default", "file"]},
+						"file": {"icon": "glyphicon glyphicon-leaf", "valid_children": []}
+					},
+					"contextmenu": {
+						items: {
+							create: {
+								label: "新建",
+								action: function () {
+								}
+							},
+							edit: {
+								label: '修改',
+								action: function () {
+								}
+							},
+							'delete': {
+								label: '删除',
+								action: function () {
+								}
+							}
 						}
-					}
-				},
-				"types": {
-					"#": {"max_children": 10, "max_depth": 4, "valid_children": ["root"]},
-					"root": {"icon": "glyphicon glyphicon-tree-deciduous", "valid_children": ["default"]},
-					"default": {"icon": "glyphicon glyphicon-leaf","valid_children": ["default", "file"]},
-					"file": {"icon": "glyphicon glyphicon-leaf", "valid_children": []}
-				},
-				"contextmenu":{
-					items: {
-						create: {
-							label: "新建",
-							action: function(){}
-						},
-						edit: {
-							label: '修改',
-							action: function (){}
-						},
-						'delete': {
-							label: '删除',
-							action: function(){}
-						}
-					}
-				},
-				"plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
-			});
-
-			$('#create').click(function () {
-				var $orginfo = $('#orginfo');
-				var orgtree = $('#orgtree').jstree(true);
-				var sel = orgtree.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				var $form = $orginfo.find('form')[0];
-				$form.parent.value = sel.data._id;
-				$form.name.value = '';
-				$form.manager.value = '';
-				$form.type.value = '';
-				$orginfo.removeClass('hidden');
-
-				$('#save').off("click").click(function () {
-					$.post('/organization', $orginfo.find('form').serialize(),
-									function (data) {
-										var newNode = data.node;
-										var orgtree = $('#orgtree').jstree(true);
-										orgtree.create_node(sel, {
-											text: newNode.name,
-											type: newNode.type,
-											data: newNode
-										});
-									}, "json");
+					},
+					"plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
 				});
-			});
 
-			$('#edit').click(function () {
-				var ot = $('#orgtree').jstree(true);
-				var sel = ot.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				var $orginfo = $('#orginfo');
-				var $form = $orginfo.find('form');
-				var form = $form[0];
-				form.name.value = sel.data.name;
-				form.manager.selectize.clear();
-				form.manager.selectize.addItem(sel.data.manager);
-				form.type.value = sel.data.type;
-				form.parent.value = sel.data.parent;
+				$('#create').click(function () {
+					var $orginfo = $('#orginfo');
+					var orgtree = $('#orgtree').jstree(true);
+					var sel = orgtree.get_selected(true);
+					if (!sel.length) {
+						return false;
+					}
+					sel = sel[0];
+					var $form = $orginfo.find('form')[0];
+					$form.parent.value = sel.data._id;
+					$form.name.value = '';
+					$form.manager.value = '';
+					$form.type.value = '';
+					$orginfo.removeClass('hidden');
 
-				$('#save').off("click").click(function () {
-					$.ajax({
-						type: 'PUT',
-						url: '/organization/' + sel.data._id,
-						data: $form.serialize()
-					}).done(function (data) {
-						sel.data = data;
-						ot.rename_node(sel, sel.data.name);
+					$('#save').off("click").click(function () {
+						$.post('/organization', $orginfo.find('form').serialize(),
+										function (data) {
+											var newNode = data.node;
+											var orgtree = $('#orgtree').jstree(true);
+											orgtree.create_node(sel, {
+												text: newNode.name,
+												type: newNode.type,
+												data: newNode
+											});
+										}, "json");
 					});
 				});
-				$orginfo.removeClass('hidden');
-			});
 
-			$('#delete').click(function () {
-				var ot = $('#orgtree').jstree(true);
-				var sel = ot.get_selected(true);
-				if (!sel.length) {
-					return false;
-				}
-				sel = sel[0];
-				$.ajax({
-					type: 'DELETE',
-					url: '/organization/' + sel.data._id
-				}).done(function (msg) {
-					console.log(msg);
-					ot.delete_node(sel);
-				});
-			});
-
-			var to = false;
-			$('#q').keyup(function () {
-				if (to) {
-					clearTimeout(to);
-				}
-				to = setTimeout(function () {
-					var v = $('#q').val();
-					$('#orgtree').jstree(true).search(v);
-				}, 250);
-			});
-
-			$('#createRoot').click(function () {
-				var $orginfo = $('#orginfo');
-				var $form = $orginfo.find('form')[0];
-				$form.name.value = '';
-				$form.manager.value = '';
-				$form.type.value = 'root';
-
-				$('#save').off("click").click(function () {
-					$.post('/organization', $orginfo.find('form').serialize(),
-									function (data) {
-										console.log(data);
-										var newNode = data.node;
-										var orgtree = $('#orgtree').jstree(true);
-										orgtree.create_node('#', {
-											text: newNode.name,
-											type: newNode.type,
-											data: newNode
-										});
-									}, "json");
-				});
-				$orginfo.removeClass('hidden');
-			});
-
-			$('#manager').selectize({
-				persist: false,
-				maxItems: 1,
-				valueField: '_id',
-				labelField: 'name',
-				searchField: ['name', 'username', 'email'],
-				create: false,
-				options: !{JSON.stringify(users)},
-				render: {
-					item: function(item, escape) {
-						return '<div>' +
-										(item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-										(item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
-										'</div>';
-					},
-					option: function(item, escape) {
-						var label = item.name || item.email;
-						var caption = item.name ? item.email : null;
-						return '<div>' +
-										'<span class="">' + escape(label) + ' | </span>' +
-										(caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-										'</div>';
+				$('#edit').click(function () {
+					var ot = $('#orgtree').jstree(true);
+					var sel = ot.get_selected(true);
+					if (!sel.length) {
+						return false;
 					}
-				}
+					sel = sel[0];
+					var $orginfo = $('#orginfo');
+					var $form = $orginfo.find('form');
+					var form = $form[0];
+					form.name.value = sel.data.name;
+					form.manager.selectize.clear();
+					form.manager.selectize.addItem(sel.data.manager);
+					form.type.value = sel.data.type;
+					form.parent.value = sel.data.parent;
+
+					$('#save').off("click").click(function () {
+						$.ajax({
+							type: 'PUT',
+							url: '/organization/' + sel.data._id,
+							data: $form.serialize()
+						}).done(function (data) {
+							sel.data = data;
+							ot.rename_node(sel, sel.data.name);
+						});
+					});
+					$orginfo.removeClass('hidden');
+				});
+
+				$('#delete').click(function () {
+					var ot = $('#orgtree').jstree(true);
+					var sel = ot.get_selected(true);
+					if (!sel.length) {
+						return false;
+					}
+					sel = sel[0];
+					$.ajax({
+						type: 'DELETE',
+						url: '/organization/' + sel.data._id
+					}).done(function (msg) {
+						console.log(msg);
+						ot.delete_node(sel);
+					});
+				});
+
+				var to = false;
+				$('#q').keyup(function () {
+					if (to) {
+						clearTimeout(to);
+					}
+					to = setTimeout(function () {
+						var v = $('#q').val();
+						$('#orgtree').jstree(true).search(v);
+					}, 250);
+				});
+
+				$('#createRoot').click(function () {
+					var $orginfo = $('#orginfo');
+					var $form = $orginfo.find('form')[0];
+					$form.name.value = '';
+					$form.manager.value = '';
+					$form.type.value = 'root';
+
+					$('#save').off("click").click(function () {
+						$.post('/organization', $orginfo.find('form').serialize(),
+										function (data) {
+											console.log(data);
+											var newNode = data.node;
+											var orgtree = $('#orgtree').jstree(true);
+											orgtree.create_node('#', {
+												text: newNode.name,
+												type: newNode.type,
+												data: newNode
+											});
+										}, "json");
+					});
+					$orginfo.removeClass('hidden');
+				});
+
+				$('#manager').selectize({
+					persist: false,
+					maxItems: 1,
+					valueField: '_id',
+					labelField: 'name',
+					searchField: ['name', 'username', 'email'],
+					create: false,
+					options: !{JSON.stringify(users)},
+					render: {
+						item: function (item, escape) {
+							return '<div>' +
+											(item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+											(item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+											'</div>';
+						},
+						option: function (item, escape) {
+							var label = item.name || item.email;
+							var caption = item.name ? item.email : null;
+							return '<div>' +
+											'<span class="">' + escape(label) + ' | </span>' +
+											(caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+											'</div>';
+						}
+					}
+				});
 			});
 		});

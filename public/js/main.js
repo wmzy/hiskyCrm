@@ -16,16 +16,7 @@ require.config({
 	}
 });
 
-require(
-	document.getElementById('#scripts').getAttribute('data-async').split(',')
-);
+require(['bootstrap'].concat(
+	document.getElementById('scripts').getAttribute('data-files').split(/[,;: ]/)
+));
 
-require(['jquery'], function($) {
-
-	'use strict';
-
-	$(function() {
-		require($('#scripts').data('foot').split(','));
-	});
-
-});
