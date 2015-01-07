@@ -1,0 +1,76 @@
+extends ../layouts/defualt
+
+block title
+	title 新建事项 - #{pkg.name}
+
+block content
+	.row
+		.col-md-6.col-md-offset-3
+			.well.well-sm
+				form.form-horizontal(action='/item/create/' + _id, method='post')
+					fieldset
+						legend.text-center 新建-#{name}
+						input.hidden(name='_csrf' value=csrf_token)
+						each field in fields
+							.form-group
+								label.col-md-2.control-label(for=field.name)= field.name
+								.col-md-9
+									input#name.form-control(name=field.name, type='text' || field.type, placeholder=field.name)
+						.form-group
+							.col-md-12.text-right.btn-toolbar
+								button#cancel.btn.btn-default(type='button') 取消
+								button#save.btn.btn-primary.btn-lg(type='submit') 新建
+
+block foot-script
+	script.
+		require(['jquery', 'selectize'], function ($) {
+			$(function () {
+				$('#cancel').click(function () {
+					if (history.length) {
+						history.back();
+					} else {
+						window.close();
+					}
+				});
+				$('#form').submit(function () {
+					$(this).find('[name="fields[][name]"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][name]');
+					});
+					$(this).find('[name="fields[][type]"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][type]');
+					});
+				});
+
+				$('#fields').on('click', '.removefield', function () {
+					$(this).parents('.form-group').remove();
+				});
+				$('#fields').on('click', '.addfield', function () {
+					$('#fieldtemplate')
+									.clone()
+									.removeAttr('id')
+									.insertBefore($(this).parents('.form-group').first())
+									.removeClass('hidden')
+									.find('.selecttype')
+									.first()
+									.removeClass('selecttype')
+									.selectize({
+										maxItems: 1,
+										valueField: 'name',
+										labelField: 'name',
+										earchField: ['name'],
+										options: [
+											{name: 'String'},
+											{name: 'Number'},
+											{name: 'Date'},
+											{name: 'Buffer'},
+											{name: 'Boolean'},
+											{name: 'Mixed'},
+											{name: 'Objectid'},
+											{name: 'Array'}
+										],
+										create: false
+									});
+				});
+			});
+		});
+

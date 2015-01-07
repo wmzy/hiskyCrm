@@ -26,13 +26,15 @@ block content
 
 block foot-script
    script.
-      $(function () {
-         $('#cancel').click(function () {
-            if (history.length) {
-               history.back();
-            } else {
-               window.close();
-            }
+      require(['jquery'], function ($) {
+         $(function () {
+            $('#cancel').click(function () {
+               if (history.length) {
+                  history.back();
+               } else {
+                  window.close();
+               }
+            });
          });
       });
 

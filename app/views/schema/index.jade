@@ -8,25 +8,24 @@ block content
       table.table.table-striped.custab
          thead
             a.btn.btn-primary.btn-xs.pull-right(href='/schema/new')
-               b +
-               | 添加
+               b +添加
             tr
                th 名称
                th 描述
                th 所有者
                th.text-center 操作
-      each schema in schemas
-         tr
-            td #{schema.name}
-            td #{schema.description}
-            td #{schema.owner}
-            td.text-center
-               a.btn.btn-info.btn-xs(href='/schema/edit/' + schema._id)
-                  span.glyphicon.glyphicon-edit
-                  | 修改
-               a.btn.btn-danger.btn-xs(data-id=schema._id.toString())
-                  span.glyphicon.glyphicon-remove
-                  | 删除
+         each schema in schemas
+            tr
+               td #{schema.name}
+               td #{schema.description}
+               td #{schema.owner}
+               td.text-center.btn-toolbar
+                  a.btn.btn-info.btn-xs(href='/schema/edit/' + schema._id)
+                     span.glyphicon.glyphicon-edit
+                     | 修改
+                  a.btn.btn-danger.btn-xs(data-id=schema._id.toString())
+                     span.glyphicon.glyphicon-remove
+                     | 删除
 
 block foot-script
    script.

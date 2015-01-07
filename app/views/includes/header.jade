@@ -18,6 +18,14 @@ nav(role='navigation' class='navbar navbar-default navbar-fixed-top')
 						li: a(href='/group') 组管理
 						li: a(href='/users/manage') 用户管理
 				li.dropdown
+					a.dropdown-toggle.dropdown(href='#' data-toggle='dropdown') 工作管理
+						b.caret
+					ul.dropdown-menu
+						li: a(href='/item/new') 新建事项
+						li: a(href='/item/todo') 待办事项
+						li: a(href='/item/done') 已办事项
+						li: a(href='/item/draft') 草稿
+				li.dropdown
 					a.dropdown-toggle.dropdown(href='#' data-toggle='dropdown') 装机管理
 						b.caret
 					ul.dropdown-menu

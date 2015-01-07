@@ -14,6 +14,7 @@ var home = require('home');
 var organization = require('organization');
 var group = require('group');
 var schema = require('schema');
+var item = require('item');
 
 /**
  * Route middlewares
@@ -54,7 +55,16 @@ module.exports = function (app, passport) {
     app.post('/group', group.create);
     app.delete('/group/:groupId', group.delete);
 
-    // group routes
+    // item routes
+    app.get('/item', item.index);
+    app.get('/item/new', item.new);
+    app.get('/item/new/:schemaId', item.newForm);
+    app.get('/item/edit/:itemId', item.edit);
+    app.put('/item/:itemId', item.update);
+    app.post('/item/create/:schemaId', item.create);
+    app.delete('/item/:itemId', item.delete);
+
+    // schema routes
     app.get('/schema', schema.index);
     app.get('/schema/new', schema.new);
     app.get('/schema/edit/:schemaId', schema.edit);

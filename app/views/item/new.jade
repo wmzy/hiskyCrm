@@ -1,0 +1,14 @@
+extends ../layouts/defualt
+
+block title
+   title 新建组 - #{pkg.name}
+
+block content
+   .row
+      .col-md-6.col-md-offset-3
+         .well.well-sm
+            h2 选择模板
+            ul
+               each schema in schemas
+                  li: a(href='/item/new/' + schema._id)= schema.name
+

@@ -39,17 +39,13 @@ exports.create = function (req, res) {
 };
 
 exports.edit = function (req, res, next) {
-	async.parallel([function (callback) {
-		User.find(callback);
-	}, function (callback) {
-		Schema.findById(req.params.schemaId, callback);
-	}], function (err, results) {
+	Schema.findById(req.params.schemaId, function (err, schema) {
 		if (err) {
 			winston.error(err);
 			return next(err);
 		}
 
-		res.render('schema/edit', {schema: results[1], users: results[0]});
+		res.render('schema/edit', schema);
 	});
 };
 

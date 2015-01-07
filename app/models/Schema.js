@@ -25,8 +25,9 @@ var SchemaSchema = new Schema({
 	},
 	fields: [{
 		name: {type: String, required: true},
-		type: {type: String, required: true,
-			enum: ['String', 'Number', 'Date','Buffer', 'Boolean', 'Mixed', 'Objectid', 'Array']
+		type: {
+			type: String, required: true,
+			enum: ['String', 'Number', 'Date', 'Buffer', 'Boolean', 'Mixed', 'ObjectId', 'Array']
 		}
 	}]
 });
@@ -43,6 +44,23 @@ var SchemaSchema = new Schema({
  * Virtuals
  */
 
+SchemaSchema
+	.virtual('itemModel')
+	.get(function () {
+		try {
+			console.log('e');
+			return mongoose.model(this.name);
+		} catch (e) {
+			if (this.fields && this.fields.length) {
+				return mongoose.model(this.name, new Schema(this.fields.reduce(function (pre, cur) {
+					pre[cur.name] = global[cur.type] || Schema.Types[cur.type];
+					return pre;
+				}, {})), this.name);
+			}
+
+			throw e;
+		}
+	});
 
 /**
  * Validations
@@ -54,9 +72,25 @@ var SchemaSchema = new Schema({
 //});
 
 /**
- * Pre-save hook
+ * Post hooks
  */
 
+SchemaSchema.post('save', function (schema) {
+	delete mongoose.models[schema.name];
+	delete mongoose.modelSchemas[schema.name];
+
+	if (schema.fields && schema.fields.length) {
+		mongoose.model(schema.name, new Schema(schema.fields.reduce(function (pre, cur) {
+			pre[cur.name] = global[cur.type] || Schema.Types[cur.type];
+			return pre;
+		}, {})), schema.name);
+	}
+});
+
+SchemaSchema.post('remove', function (schema) {
+	delete mongoose.models[schema.name];
+	delete mongoose.modelSchemas[schema.name];
+});
 
 /**
  * Methods
@@ -88,3 +122,4 @@ SchemaSchema.statics = {
 
 mongoose.model('Schema', SchemaSchema);
 
+// todo: 当name改变时需要删除旧的model 和 依赖

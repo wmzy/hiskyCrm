@@ -29,6 +29,7 @@ require(['jquery', 'selectize'], function ($) {
 
 		$(".selectize").each(function() {
 			var $this = $(this);
+			$this.removeClass('selectize');
 			var config = $.extend({
 				persist: false,
 				maxItems: null,
