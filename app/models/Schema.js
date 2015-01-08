@@ -8,7 +8,39 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
 /**
- * User Schema
+ * Field Schema
+ */
+
+var FieldSchema = new Schema({
+	name: {type: String, required: true},
+	type: {
+		type: String,
+		required: true,
+		enum: ['String', 'Number', 'Date', 'Buffer', 'Boolean', 'Mixed', 'ObjectId', 'Array']
+	}
+});
+
+/**
+ * View Schema
+ */
+
+var ViewSchema = new Schema({
+	name: {type: String, required: true},
+	description: {type: String, default: ''},
+	type: {
+		type: String,
+		required: true,
+		enum: ['new', 'modify', 'delete']
+	},
+	layout: [String],
+	fields: [{
+		fieldId: ObjectId,
+		operation: { type: String, default: 'read', enum: ['read', 'write'] }
+	}]
+});
+
+/**
+ * Schema Schema
  */
 
 var SchemaSchema = new Schema({
@@ -23,22 +55,19 @@ var SchemaSchema = new Schema({
 		user: {type: ObjectId, ref: 'User'},
 		date: {type: Date}
 	},
-	fields: [{
-		name: {type: String, required: true},
-		type: {
-			type: String, required: true,
-			enum: ['String', 'Number', 'Date', 'Buffer', 'Boolean', 'Mixed', 'ObjectId', 'Array']
-		}
-	}]
+	fields: [FieldSchema],
+	views: [ViewSchema]
 });
 
 /**
  * Setters
  */
 
-//SchemaSchema.path('roles').set(function (v) {
-//	return v === '' ? undefined : v;
-//});
+// todo: 当name改变或删除时需要删除旧的 model 依赖: 遍历model 的 ref
+SchemaSchema.path('name').set(function (v) {
+	this.oldName = v;
+	return v;
+});
 
 /**
  * Virtuals
@@ -48,7 +77,6 @@ SchemaSchema
 	.virtual('itemModel')
 	.get(function () {
 		try {
-			console.log('e');
 			return mongoose.model(this.name);
 		} catch (e) {
 			if (this.fields && this.fields.length) {
@@ -72,19 +100,21 @@ SchemaSchema
 //});
 
 /**
- * Post hooks
+ * Pre hooks
  */
 
-SchemaSchema.post('save', function (schema) {
-	delete mongoose.models[schema.name];
-	delete mongoose.modelSchemas[schema.name];
+SchemaSchema.pre('save', function (next) {
+	var oldName = this.oldName || this.name;
+	delete mongoose.models[oldName];
+	delete mongoose.modelSchemas[oldName];
 
-	if (schema.fields && schema.fields.length) {
-		mongoose.model(schema.name, new Schema(schema.fields.reduce(function (pre, cur) {
+	if (this.fields && this.fields.length) {
+		mongoose.model(this.name, new Schema(this.fields.reduce(function (pre, cur) {
 			pre[cur.name] = global[cur.type] || Schema.Types[cur.type];
 			return pre;
-		}, {})), schema.name);
+		}, {})), this.name);
 	}
+	next();
 });
 
 SchemaSchema.post('remove', function (schema) {
@@ -122,4 +152,3 @@ SchemaSchema.statics = {
 
 mongoose.model('Schema', SchemaSchema);
 
-// todo: 当name改变时需要删除旧的model 和 依赖

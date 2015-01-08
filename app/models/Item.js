@@ -17,6 +17,14 @@ var ItemSchema = new Schema({
 	creator: {type: ObjectId, ref: 'User'},
 	createdAt  : {type : Date, default : Date.now},
 	useSchema: {type: ObjectId, ref: 'Schema'},
+	history: [{
+		nodeId: ObjectId,
+		processors: [{type: ObjectId, ref: 'User'}]
+	}],
+	currentNodes: [{
+		nodeId: ObjectId,
+		processors: [{type: ObjectId, ref: 'User'}]
+	}],
 	workflow: {type: ObjectId, ref: 'Workflow'}
 });
 

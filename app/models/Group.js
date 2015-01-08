@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
 /**
- * User Schema
+ * Group Schema
  */
 
 var GroupSchema = new Schema({
