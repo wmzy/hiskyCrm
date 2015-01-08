@@ -14,6 +14,7 @@ var home = require('home');
 var organization = require('organization');
 var group = require('group');
 var schema = require('schema');
+var workflow = require('workflow');
 var item = require('item');
 
 /**
@@ -71,6 +72,14 @@ module.exports = function (app, passport) {
     app.put('/schema/:schemaId', schema.update);
     app.post('/schema', schema.create);
     app.delete('/schema/:schemaId', schema.delete);
+
+    // workflow routes
+    app.get('/workflow', workflow.index);
+    app.get('/workflow/new', workflow.new);
+    app.get('/workflow/edit/:workflowId', workflow.edit);
+    app.put('/workflow/:workflowId', workflow.update);
+    app.post('/workflow', workflow.create);
+    app.delete('/workflow/:workflowId', workflow.delete);
 
     // article routes
     app.param('id', articles.load);

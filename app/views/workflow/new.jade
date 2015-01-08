@@ -1,0 +1,98 @@
+extends ../layouts/defualt
+
+block title
+	title 新建流程 - #{pkg.name}
+
+block content
+	.row
+		.col-md-6.col-md-offset-3
+			.well.well-sm
+				#nodetemplate.form-group.hidden.btn-toolbar
+					label.col-md-2.control-label(for='nodes[][name]') 节点名称
+					.col-md-4
+						input.form-control(name='nodes[][name]', type='text', placeholder='节点名称')
+					label.col-md-1.control-label(for='nodes[][type]') 类型
+					.col-md-2
+						input.selecttype.form-control(name='nodes[][type]', placeholder='请选择......', data-options=types, data-config=config)
+					button.removenode.btn.btn-labeled.btn-danger(type='button')
+						span.btn-label
+							i.glyphicon.glyphicon-minus
+					button.addnode.btn.btn-labeled.btn-success(type='button')
+						span.btn-label
+							i.glyphicon.glyphicon-plus
+				form#form.form-horizontal(action='/schema', method='post')
+					fieldset
+						legend.text-center 新建流程
+						input.hidden(name='_csrf' value=csrf_token)
+						.form-group
+							label.col-md-2.control-label(for='name') 名称
+							.col-md-9
+								input#name.form-control(name='name', type='text', placeholder='流程名称')
+						.form-group
+							label.col-md-2.control-label(for='description') 描述
+							.col-md-9
+								textarea#description.form-control(name='description', placeholder='请输入流程的描述......', rows='5')
+						#nodes
+							.form-group
+								button.addnode.btn.btn-labeled.btn-success.btn-block(type='button')
+									span.btn-label
+										i.glyphicon.glyphicon-plus
+									| 点击添加节点
+						.form-group
+							.col-md-12.text-right.btn-toolbar
+								button#cancel.btn.btn-default(type='button') 取消
+								button#save.btn.btn-primary.btn-lg(type='submit') 新建
+
+block foot-script
+	script.
+		require(['jquery', 'selectize'], function ($) {
+			$(function () {
+				$('#cancel').click(function () {
+					if (history.length) {
+						history.back();
+					} else {
+						window.close();
+					}
+				});
+				$('#form').submit(function () {
+					$(this).find('[name="nodes[][name]"]').each(function (i) {
+						$(this).attr('name', 'nodes[' + i + '][name]');
+					});
+					$(this).find('[name="nodes[][type]"]').each(function (i) {
+						$(this).attr('name', 'nodes[' + i + '][type]');
+					});
+				});
+
+				$('#nodes').on('click', '.removenode', function () {
+					$(this).parents('.form-group').remove();
+				});
+				$('#nodes').on('click', '.addnode', function () {
+					$('#nodetemplate')
+									.clone()
+									.removeAttr('id')
+									.insertBefore($(this).parents('.form-group').first())
+									.removeClass('hidden')
+									.find('.selecttype')
+									.first()
+									.removeClass('selecttype')
+									.selectize({
+										maxItems: 1,
+										valueField: 'name',
+										labelField: 'name',
+										earchField: ['name'],
+										options: [
+											{name: 'String'},
+											{name: 'Number'},
+											{name: 'Date'},
+											{name: 'Buffer'},
+											{name: 'Boolean'},
+											{name: 'Mixed'},
+											{name: 'Objectid'},
+											{name: 'Array'}
+										],
+										create: false
+									});
+				});
+			});
+		});
+

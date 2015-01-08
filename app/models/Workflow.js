@@ -19,6 +19,10 @@ var NodeSchema = new Schema({
 		selector: String,
 		strategy: {type: String, enum: ['preemption', 'cooperation'], default: 'preemption'}
 	},
+	form: {
+		schemaOf: {type: ObjectId, ref: 'Schema'},
+		viewId: ObjectId
+	},
 	waitNode: {
 		all: [ObjectId],
 		any: [ObjectId],
@@ -36,6 +40,7 @@ var NodeSchema = new Schema({
 var WorkflowSchema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, default: ''},
+	owner: {type: ObjectId, ref: 'User'},
 	nodes: [NodeSchema],
 	allows: [{type: ObjectId, ref: 'User'}],
 	deny: [{type: ObjectId, ref: 'Role'}]

@@ -1,0 +1,49 @@
+extends ../layouts/defualt
+
+block title
+   title 流程管理 - #{pkg.name}
+
+block content
+   div.row.col-md-6.col-md-offset-2.custyle
+      table.table.table-striped.custab
+         thead
+            a.btn.btn-primary.btn-xs.pull-right(href='/workflow/new')
+               b +添加
+            tr
+               th 名称
+               th 描述
+               th 所有者
+               th.text-center 操作
+      each workflow in workflows
+         tr
+            td #{workflow.name}
+            td #{workflow.description}
+            td #{workflow.owner}
+            td.text-center.btn-toolbar
+               a.btn.btn-info.btn-xs(href='/workflow/edit/' + workflow._id)
+                  span.glyphicon.glyphicon-edit
+                  | 修改
+               a.btn.btn-danger.btn-xs(data-id=workflow._id.toString())
+                  span.glyphicon.glyphicon-remove
+                  | 删除
+
+block foot-script
+   script.
+      require(['jquery'], function ($) {
+         $(function () {
+            $('a[data-id]').click(function () {
+               var $self = $(this);
+               $.ajax({
+                  type: 'DELETE',
+                  url: '/workflow/' + $self.data('id')
+               }).done(function () {
+                  var $tr = $self.parents('tr')[0];
+                  $tr.remove();
+               }).fail(function (jqxhr) {
+                  console.log(jqxhr.status);
+                  console.log(jqxhr.responseJSON);
+               });
+            });
+         });
+      });
+
