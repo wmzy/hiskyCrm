@@ -16,6 +16,7 @@ var group = require('group');
 var schema = require('schema');
 var workflow = require('workflow');
 var item = require('item');
+var installation = require('installation');
 
 /**
  * Route middlewares
@@ -64,6 +65,12 @@ module.exports = function (app, passport) {
     app.put('/item/:itemId', item.update);
     app.post('/item/create/:schemaId', item.create);
     app.delete('/item/:itemId', item.delete);
+
+    // machine/installation routes
+    app.get('/machine/installation/task', installation.task);
+    app.get('/machine/installation/task/new', installation.newTask);
+    app.post('/machine/installation/task', installation.createTask);
+    app.put('/machine/installation/task/:taskId', installation.updateTask);
 
     // schema routes
     app.get('/schema', schema.index);

@@ -19,12 +19,12 @@ var ItemSchema = new Schema({
 	useSchema: {type: ObjectId, ref: 'Schema'},
 	history: [{
 		nodeId: ObjectId,
+		state: {type: String, enum: ['wait', 'on', 'done', 'invalid'], default: 'wait'},
 		processors: [{type: ObjectId, ref: 'User'}]
 	}],
-	currentNodes: [{
-		nodeId: ObjectId,
-		processors: [{type: ObjectId, ref: 'User'}]
-	}],
+	currentNodes: [ObjectId],
+	state: {type: String, enum: ['new', 'on', 'done', 'delete', 'lock'], default: 'new'},
+	log: [String],
 	workflow: {type: ObjectId, ref: 'Workflow'}
 });
 

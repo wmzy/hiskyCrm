@@ -23,13 +23,12 @@ var NodeSchema = new Schema({
 		schemaOf: {type: ObjectId, ref: 'Schema'},
 		viewId: ObjectId
 	},
-	waitNode: {
-		all: [ObjectId],
-		any: [ObjectId],
-		quantity: Number
+	waitNodes: [ObjectId], // 上一节点完成时，检查 waitNodes 是否有 未完成 的 有效 节点
+	nextNode: {
+		options: [ObjectId],
+		preHook: String,
+		postHook: String
 	},
-	nextNode: [ObjectId],
-	state: {type: String, enum: ['wait', 'on', 'done'], default: 'wait'},
 	type: {type: String, enum: ['start', 'middle', 'end'], default: 'end'}
 });
 

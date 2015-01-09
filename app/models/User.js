@@ -35,8 +35,8 @@ var UserSchema = new Schema({
         phone: {type: String, default: ''}
     },
     roles: [{type: ObjectId, ref: 'Role'}],
-    department: {type: ObjectId, ref: 'OrganizationNode', default: null},
-    jobPosition: [{type: ObjectId, ref: 'JobPosition', default: null}],
+    department: {type: ObjectId, ref: 'OrganizationNode'},
+    jobPosition: [{type: ObjectId, ref: 'JobPosition'}],
 //    authToken: { type: String, default: '' },
 //    provider: { type: String, default: '' },
 //    facebook: {},
