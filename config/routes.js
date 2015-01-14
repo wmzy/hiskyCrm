@@ -83,6 +83,7 @@ module.exports = function (app, passport) {
     // workflow routes
     app.get('/workflow', workflow.index);
     app.get('/workflow/new', workflow.new);
+    app.get('/workflow/designer', workflow.designer);
     app.get('/workflow/edit/:workflowId', workflow.edit);
     app.put('/workflow/:workflowId', workflow.update);
     app.post('/workflow', workflow.create);

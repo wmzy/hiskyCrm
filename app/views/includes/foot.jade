@@ -14,12 +14,24 @@ script.
 		baseUrl: '/js',
 		paths: {
 			'jquery': 'lib/jquery-2.1.1.min',
+			'jqueryUI': 'lib/jquery-ui.min',
+			'jsPlumb': 'lib/jquery.jsPlumb-1.7.2-min',
+			'contexMenu': 'lib/jquery.contexMenu',
 			'bootstrap': 'lib/bootstrap.min',
 			'jstree': 'lib/jstree.min',
 			'selectize': 'lib/selectize.min'
 		},
 		shim: {
 			'selectize': {
+				deps: ['jquery']
+			},
+			'jsPlumb': {
+				deps: ['jquery']
+			},
+			'contexMenu': {
+				deps: ['jquery', 'jqueryUI']
+			},
+			'jqueryUI': {
 				deps: ['jquery']
 			},
 			'bootstrap': {

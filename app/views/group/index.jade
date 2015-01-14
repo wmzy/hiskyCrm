@@ -28,18 +28,20 @@ block content
 
 block foot-script
 	script.
-		$(function () {
-			$('a[data-id]').click(function () {
-				var $self = $(this);
-				$.ajax({
-					type: 'DELETE',
-					url: '/group/' + $self.data('id')
-				}).done(function () {
-					var $tr = $self.parents('tr')[0];
-					$tr.remove();
-				}).fail(function (jqxhr) {
-					console.log(jqxhr.status);
-					console.log(jqxhr.responseJSON);
+		require(['jquery'], function ($) {
+			$(function () {
+				$('a[data-id]').click(function () {
+					var $self = $(this);
+					$.ajax({
+						type: 'DELETE',
+						url: '/group/' + $self.data('id')
+					}).done(function () {
+						var $tr = $self.parents('tr')[0];
+						$tr.remove();
+					}).fail(function (jqxhr) {
+						console.log(jqxhr.status);
+						console.log(jqxhr.responseJSON);
+					});
 				});
 			});
 		});

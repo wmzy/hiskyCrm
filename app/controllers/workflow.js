@@ -24,6 +24,9 @@ exports.index = function (req, res, next) {
 exports.new = function (req,res) {
 	res.render('workflow/new');
 };
+exports.designer = function (req,res) {
+	res.render('workflow/designer');
+};
 
 exports.create = function (req, res) {
 	var workflow = new Workflow(req.body);
