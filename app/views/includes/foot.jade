@@ -16,8 +16,10 @@ script.
 			'jquery': 'lib/jquery-2.1.1.min',
 			'jqueryUI': 'lib/jquery-ui.min',
 			'jsPlumb': 'lib/jquery.jsPlumb-1.7.2-min',
-			'contexMenu': 'lib/jquery.contexMenu',
+			'contextMenu': 'lib/jquery.contextMenu',
 			'bootstrap': 'lib/bootstrap.min',
+			'bootstrap-modalmanager': 'lib/bootstrap-modalmanager',
+			'bootstrap-modal': 'lib/bootstrap-modal',
 			'jstree': 'lib/jstree.min',
 			'selectize': 'lib/selectize.min'
 		},
@@ -28,7 +30,7 @@ script.
 			'jsPlumb': {
 				deps: ['jquery']
 			},
-			'contexMenu': {
+			'contextMenu': {
 				deps: ['jquery', 'jqueryUI']
 			},
 			'jqueryUI': {
@@ -36,6 +38,12 @@ script.
 			},
 			'bootstrap': {
 				deps: ['jquery']
+			},
+			'bootstrap-modalmanager': {
+				deps: ['bootstrap']
+			},
+			'bootstrap-modal': {
+				deps: ['bootstrap-modalmanager']
 			}
 		}
 	});

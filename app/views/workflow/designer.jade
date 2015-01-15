@@ -4,8 +4,10 @@ block title
 	title 新建流程 - #{pkg.name}
 
 block head-page
-	link(href='/css/flowchart.css' rel='stylesheet')
+	link(href='/css/bootstrap-modal.css' rel='stylesheet')
+	link(href='/css/bootstrap-modal-bs3patch.css' rel='stylesheet')
 	link(href='/css/jquery.contextMenu.css' rel='stylesheet')
+	link(href='/css/flowchart.css' rel='stylesheet')
 
 
 block content
@@ -27,7 +29,7 @@ block content
 						.form-group
 							input.hidden(name='fields')
 							.col-md-12.text-right.btn-toolbar
-								button#workflow.btn.btn-success(type='button', data-toggle='modal', data-target='#designer') 设计流程
+								button#workflow.btn.btn-success(type='button', data-toggle='modal', data-target=null, href='#designer') 设计流程
 						.form-group
 							.col-md-12.text-right.btn-toolbar
 								button#cancel.btn.btn-default(type='button') 取消
@@ -41,30 +43,31 @@ block content
 						span.sr-only 关闭
 					h4.modal-title 流程设计
 				.modal-body
-					#designerContainer
-						#node1.node(data-id=1)
-							.ep
-							strong node1
-						#node2.node(data-id=2)
-							.ep
-							strong node2
-						#node3.node(data-id=3)
-							.ep
-							strong node3
-						#node4.node(data-id=4)
-							.ep
-							strong node4
-						#start.node(data-id=6)
-							.ep
+					#designerContainer.designerContainer
+						#start.node(data-id=0)
 							strong start
+						#end.node(data-id=-1)
+							strong end
 				.modal-footer
 					button.btn.btn-default(type='button', data-dismiss='modal') 关闭
 					button.btn.btn-primary(type='button') 保存
 
+	#form-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-header
+			button.close(type='button', data-dismiss='modal')
+				span(aria-hidden='true') ×
+				span.sr-only 关闭
+			h4.modal-title 分支条件
+		.modal-body
+			.container
+		.modal-footer
+			button.btn.btn-default(type='button', data-dismiss='modal') 取消
+			button.btn.btn-primary(type='button') 保存
+
 
 block foot-script
 	script.
-		require(['jquery', 'jqueryUI', 'jsPlumb'], function ($) {
+		require(['jquery', 'jqueryUI', 'jsPlumb', 'contextMenu', 'bootstrap-modal'], function ($) {
 			$(function () {
 				$('#cancel').click(function () {
 					if (history.length) {
@@ -79,7 +82,7 @@ block foot-script
 				$('#designer').one('shown.bs.modal', function () {
 					jsPlumb.ready(function () {
 						jsPlumb.importDefaults({
-							Container: '#designerContainer',
+							Container: 'designerContainer',
 							DragOptions: {cursor: 'pointer', zIndex: 2000},
 							Endpoint: ["Dot", {radius: 10}],
 							HoverPaintStyle: {strokeStyle: "#42a62c", lineWidth: 2},
@@ -93,13 +96,13 @@ block foot-script
 							isSource: true,
 							isTarget: false,
 							maxConnections: -1,
-							anchor: "BottomCenter"
+							anchor: "Right"
 						};
 						var nodePoint = {
 							isSource: true,
 							isTarget: true,
 							maxConnections: -1,
-							anchor: "TopCenter",
+							anchor: 'RightLeft',
 							paintStyle: {fillStyle: 'red'},
 							endpoint: ["Rectangle", {width: 12, height: 12}]
 						};
@@ -107,45 +110,76 @@ block foot-script
 							isSource: false,
 							isTarget: true,
 							maxConnections: -1,
-							anchor: "TopCenter",
+							anchor: "Left",
 							paintStyle: {fillStyle: 'red'},
 							endpoint: ["Rectangle", {width: 12, height: 12}]
 						};
 
-						jsPlumb.addEndpoint('#start', startPoint);
-						jsPlumb.addEndpoint('#end', endPoint);
+						jsPlumb.addEndpoint('start', startPoint);
+						jsPlumb.addEndpoint('end', endPoint);
 
 						// todo: add event context menu
-						jsPlumb.bind();
-						//jsPlumb.setContainer('#designerContainer');
-						//// 连接事件
-						//jsPlumb.bind("jsPlumbConnection", function (conn, originalEvent) {
-						//	if (conn.connection.sourceId == conn.connection.targetId) {
-						//		jsPlumb.detach(conn);
-						//		alert("不能连接自己！");
-						//	}
-						//	$.each(jsPlumb.getEndpoints(conn.source), function (i, el) {
-						//		if (conn.connection != el.connections[0] &&
-						//						(el.connections[0].targetId == conn.targetId || (el.connections[0].sourceId == conn.targetId && el.connections[0].targetId == conn.sourceId))) {
-						//			jsPlumb.detach(conn);
-						//			alert("不能重复连接！");
-						//			return false;
-						//		}
-						//	});
-						//	nodeFlow.onConnectionChange && nodeFlow.onConnectionChange(conn);
-						//	conn.connection.bind("editCompleted", function (o) {
-						//		if (typeof console != "undefined")
-						//			console.log("connection edited. path is now ", o.path);
-						//	});
-						//});
-						//// 取消连接事件
-						//jsPlumb.bind("jsPlumbConnectionDetached", function (conn) {
-						//	nodeFlow.onConnectionChange && nodeFlow.onConnectionChange(conn);
-						//});
-						//// 双击取消连接
-						//jsPlumb.bind("dblclick", function (conn, originalEvent) {
-						//	jsPlumb.detach(conn);
-						//});
+						$('#designerContainer').contextMenu({
+							selector: '.node',
+							callback: function(key, options, o) {
+								var m = "clicked: " + key;
+								console.log(m);
+								console.log(options);
+								console.log(o);
+							},
+							items: {
+								"edit": {name: "Edit", icon: "edit"},
+								"cut": {name: "Cut", icon: "cut"},
+								"copy": {name: "Copy", icon: "copy"},
+								"paste": {name: "Paste", icon: "paste"},
+								"delete": {name: "Delete", icon: "delete"},
+								"sep1": "---------",
+								"quit": {name: "Quit", icon: "quit"}
+							}
+						});
+
+						var taskNode = '<div class="node"><strong>新节点</strong></div>';
+						$.contextMenu({
+							selector: '#designerContainer',
+							items: {
+								"new": {
+									name: "新建节点",
+									icon: "new",
+									callback: function (key, option) {
+										var el = $(taskNode).appendTo('#designerContainer');
+										jsPlumb.addEndpoints(el, [startPoint, endPoint]);
+										jsPlumb.draggable(el);
+									}
+								},
+								"paste": {name: "粘贴", icon: "paste"},
+								"sep1": "---------",
+								"save": {name: "保存", icon: "save"},
+								"quit": {name: "Quit", icon: "quit"}
+							}
+						});
+
+						// 连接事件
+						jsPlumb.bind("connection", function (info, originalEvent) {
+							if (info.connection.sourceId == info.connection.targetId) {
+								jsPlumb.detach(info);
+								alert("不能连接自己！");
+							}
+							$.each(jsPlumb.getEndpoints(info.source), function (i, el) {
+								if (info.connection != el.connections[0] &&
+												(el.connections[0].targetId == info.targetId || (el.connections[0].sourceId == info.targetId && el.connections[0].targetId == info.sourceId))) {
+									jsPlumb.detach(info.connection);
+									alert("不能重复连接！");
+									return false;
+								}
+							});
+						});
+						jsPlumb.bind("click", function (connection) {
+							$('#form-modal').modal('show');
+						});
+						// 双击取消连接
+						jsPlumb.bind("dblclick", function (connection, originalEvent) {
+							jsPlumb.detach(connection);
+						});
 						//// 连接的元素
 						//// 本例中.node既是源头又是目标
 						//var nodeList = $(".node");
@@ -174,7 +208,7 @@ block foot-script
 						//	maxConnections: -1 // 最大连接数不限
 						//});
 						//jsPlumb.draggable($('.node'));
-						jsPlumb.draggable($('#start'));
+						jsPlumb.draggable($('.node'));
 
 					});
 				});
