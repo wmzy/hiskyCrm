@@ -52,7 +52,7 @@ block content
 					button.btn.btn-default(type='button', data-dismiss='modal') 关闭
 					button.btn.btn-primary(type='button') 保存
 
-	#form-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+	#conn-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 		.modal-header
 			button.close(type='button', data-dismiss='modal')
 				span(aria-hidden='true') ×
@@ -60,9 +60,40 @@ block content
 			h4.modal-title 分支条件
 		.modal-body
 			.container
+				form
+					input#connctionId(type='hidden')
+					.form-group
+						.checkbox
+							label
+								input#isOptional(type='checkbox')
+								| 是否手选
+					.form-group
+						label(for='test') 条件
+						textarea#test.form-control(type='text', rows='3')
 		.modal-footer
 			button.btn.btn-default(type='button', data-dismiss='modal') 取消
-			button.btn.btn-primary(type='button') 保存
+			button#saveconn.btn.btn-primary(type='button') 保存
+	#node-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-header
+			button.close(type='button', data-dismiss='modal')
+				span(aria-hidden='true') ×
+				span.sr-only 关闭
+			h4.modal-title 分支条件
+		.modal-body
+			.container
+				form
+					input#nodeId(type='hidden')
+					.form-group
+						.checkbox
+							label
+								input#isOptional(type='checkbox')
+								| 是否手选
+					.form-group
+						label(for='test') 条件
+						textarea#test.form-control(type='text', rows='3')
+		.modal-footer
+			button.btn.btn-default(type='button', data-dismiss='modal') 取消
+			button#savenode.btn.btn-primary(type='button') 保存
 
 
 block foot-script
@@ -97,14 +128,6 @@ block foot-script
 							isTarget: false,
 							maxConnections: -1,
 							anchor: "Right"
-						};
-						var nodePoint = {
-							isSource: true,
-							isTarget: true,
-							maxConnections: -1,
-							anchor: 'RightLeft',
-							paintStyle: {fillStyle: 'red'},
-							endpoint: ["Rectangle", {width: 12, height: 12}]
 						};
 						var endPoint = {
 							isSource: false,
@@ -173,8 +196,14 @@ block foot-script
 								}
 							});
 						});
+
+						// 保存属性
+						$('#saveconn').click(function () {
+							// todo: jsPlumb.
+						});
+
 						jsPlumb.bind("click", function (connection) {
-							$('#form-modal').modal('show');
+							$('#conn-modal').modal('show');
 						});
 						// 双击取消连接
 						jsPlumb.bind("dblclick", function (connection, originalEvent) {

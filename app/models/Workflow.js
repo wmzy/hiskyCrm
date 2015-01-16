@@ -15,6 +15,7 @@ var ObjectId = Schema.Types.ObjectId;
 var NodeSchema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, default: ''},
+	testStart: String,// 上一节点完成时，检查是否开始本节点
 	processors: {
 		selector: String,
 		strategy: {type: String, enum: ['preemption', 'cooperation'], default: 'preemption'}
@@ -23,12 +24,12 @@ var NodeSchema = new Schema({
 		schemaOf: {type: ObjectId, ref: 'Schema'},
 		viewId: ObjectId
 	},
-	waitNodes: [ObjectId], // 上一节点完成时，检查 waitNodes 是否有 未完成 的 有效 节点
-	nextNode: {
-		options: [ObjectId],
-		preHook: String,
-		postHook: String
-	},
+	waitNodes: [ObjectId],
+	nextNodes: [{
+		id: ObjectId,
+		isOptional: Boolean,
+		test: String
+	}],
 	type: {type: String, enum: ['start', 'middle', 'end'], default: 'end'}
 });
 
