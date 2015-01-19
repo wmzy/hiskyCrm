@@ -216,6 +216,7 @@ UserSchema.statics = {
     load: function (options, cb) {
         options.select = options.select || 'name username';
         this.findOne(options.criteria)
+          .populate('roles', 'name')
             .select(options.select)
             .exec(cb);
     }

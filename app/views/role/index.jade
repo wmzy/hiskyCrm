@@ -1,0 +1,93 @@
+extends ../layouts/defualt
+
+block title
+   title 角色管理 - #{pkg.name}
+
+block content
+   div.row.col-md-6.col-md-offset-2.custyle
+      table.table.table-striped.custab
+         thead
+            a.btn.btn-primary.btn-xs.pull-right(data-toggle='modal', data-target='#addRole')
+               b +添加
+            tr
+               th 角色名称
+               th 描述
+               th.text-center 操作
+         tbody
+            each role in roles
+               tr
+                  td #{role.name}
+                  td #{role.description}
+                  td.text-center.btn-toolbar(data-id=role._id.toString())
+                     a.btn.btn-info.btn-xs
+                        span.glyphicon.glyphicon-edit
+                        | 修改
+                     a.btn.btn-danger.btn-xs
+                        span.glyphicon.glyphicon-remove
+                        | 删除
+
+   #addRole.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+         .modal-content
+            .modal-header
+               button.close(type='button', data-dismiss='modal')
+                  span(aria-hidden='true') ×
+                  span.sr-only 关闭
+               h4#myModalLabel.modal-title 添加角色
+            .modal-body
+               form.clearfix
+                  .form-group
+                     label.col-md-3.control-label(for='name') 名称
+                     .col-md-9
+                        input#name.form-control(name='name', type='text', placeholder='角色名称')
+                  .form-group
+                     label.col-md-3.control-label(for='description') 描述
+                     .col-md-9
+                        textarea#description.form-control(name='description', placeholder='请输入角色的描述......', rows='5')
+            .modal-footer
+               button.btn.btn-default(type='button', data-dismiss='modal') 取消
+               button#saveRole.btn.btn-primary(type='button') 保存
+
+
+block foot-script
+   script.
+      require(['jquery', 'bootstrap'], function ($) {
+         $(function () {
+            $('tbody').on('click', '.btn-danger', function () {
+               var $self = $(this);
+               $.ajax({
+                  type: 'DELETE',
+                  url: '/role/' + $self.parent().data('id')
+               }).done(function () {
+                  var $tr = $self.parents('tr')[0];
+                  $tr.remove();
+               }).fail(function (jqxhr) {
+                  console.log(jqxhr.status);
+                  console.log(jqxhr.responseJSON);
+               });
+            });
+
+            $('#saveRole').click(function () {
+               $.ajax({
+                  type: 'POST',
+                  url: '/role',
+                  data: $('form').serialize()
+               }).done(function (role) {
+                  var $tb = $('tbody').first();
+                  var $tr = $tb.children('tr').last().clone();
+                  var $tds = $tr.children('td');
+                  $tds.eq(0).text(role.name);
+                  $tds.eq(1).text(role.description);
+                  $tds.eq(2).data('id', role._id.toString());
+                  $tr.appendTo($tb);
+                  console.log($tb[0]);
+                  console.log($tr[0]);
+                  $('#addRole').modal('hide');
+               }).fail(function (jqxhr) {
+                  console.log(jqxhr.status);
+                  console.log(jqxhr.responseJSON);
+               });
+            });
+         });
+      });
+

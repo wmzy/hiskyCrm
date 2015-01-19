@@ -34,7 +34,7 @@ exports.create = function (req, res) {
 			req.flash('err', err);
 		}
 
-		res.redirect('/role');
+		res.json(role);
 	});
 };
 

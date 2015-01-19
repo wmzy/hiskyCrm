@@ -17,21 +17,22 @@ block content
                th 结束日期
                th 地址
                th.text-center 操作
-         each installation in installations
-            tr
-               td #{installation.No}
-               td #{installation.state}
-               td #{installation.creator ? installation.creator.name : ''}
-               td #{installation.task.from}
-               td #{installation.task.to}
-               td #{installation.customerAddress}
-               td.text-center.btn-toolbar
-                  a.btn.btn-info.btn-xs(href='/installation/edit/' + installation._id)
-                     span.glyphicon.glyphicon-edit
-                     | 修改
-                  a.btn.btn-danger.btn-xs(data-id=installation._id.toString())
-                     span.glyphicon.glyphicon-remove
-                     | 删除
+         tbody
+            each installation in installations
+              tr
+                 td #{installation.No}
+                 td #{installation.state}
+                 td #{installation.creator ? installation.creator.name : ''}
+                 td #{installation.task.from}
+                 td #{installation.task.to}
+                 td #{installation.customerAddress}
+                 td.text-center.btn-toolbar
+                    a.btn.btn-info.btn-xs(href='/installation/edit/' + installation._id)
+                       span.glyphicon.glyphicon-edit
+                       | 修改
+                    a.btn.btn-danger.btn-xs(data-id=installation._id.toString())
+                       span.glyphicon.glyphicon-remove
+                       | 删除
 
 block foot-script
    script.

@@ -17,6 +17,7 @@ var schema = require('schema');
 var workflow = require('workflow');
 var item = require('item');
 var installation = require('installation');
+var role = require('role');
 
 /**
  * Route middlewares
@@ -48,6 +49,14 @@ module.exports = function (app, passport) {
     app.get('/users/:userId', users.show);
 
     app.param('userId', users.load);
+
+    // role routes
+    app.get('/role', role.index);
+    app.get('/role/new', role.new);
+    app.get('/role/edit/:roleId', role.edit);
+    app.put('/role/:roleId', role.update);
+    app.post('/role', role.create);
+    app.delete('/role/:roleId', role.delete);
 
     // group routes
     app.get('/group', group.index);

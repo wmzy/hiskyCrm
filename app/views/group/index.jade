@@ -14,17 +14,18 @@ block content
 					th 名称
 					th 描述
 					th.text-center 操作
-			each group in groups
-				tr
-					td #{group.name}
-					td #{group.description}
-					td.text-center
-						a.btn.btn-info.btn-xs(href='/group/edit/' + group._id)
-							span.glyphicon.glyphicon-edit
-							| 修改
-						a.btn.btn-danger.btn-xs(data-id=group._id.toString())
-							span.glyphicon.glyphicon-remove
-							| 删除
+			tbody
+				each group in groups
+					tr
+						td #{group.name}
+						td #{group.description}
+						td.text-center
+							a.btn.btn-info.btn-xs(href='/group/edit/' + group._id)
+								span.glyphicon.glyphicon-edit
+								| 修改
+							a.btn.btn-danger.btn-xs(data-id=group._id.toString())
+								span.glyphicon.glyphicon-remove
+								| 删除
 
 block foot-script
 	script.
