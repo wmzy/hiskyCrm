@@ -77,7 +77,8 @@ block content
 					.form-group
 						label.col-sm-2.control-label(for='jobPosition') 岗位
 						.col-sm-10
-							input#jobPosition.form-control(name='jobPosition' type='text', placeholder='岗位')
+							- var config = {maxItems: 1, valueField: '_id', labelField: 'name', searchField: ['name'], create: false}
+							input#jobPosition.selectize.form-control(name='jobPosition', placeholder='岗位', data-options=jobPosition, data-config=config)
 					.form-group
 						.col-sm-offset-2.col-sm-10
 							.pull-right
@@ -86,7 +87,7 @@ block content
 
 block foot-script
 	script.
-		require(['jquery', 'jstree', 'selectize'], function ($) {
+		require(['jquery', 'jstree', 'selectize', 'select'], function ($) {
 			$(function () {
 				var orgNodes = !{JSON.stringify(orgNodes)};
 				var users = !{JSON.stringify(users)};

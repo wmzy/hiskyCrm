@@ -6,6 +6,7 @@ var extend = require('util')._extend;
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var OrganizationNode = mongoose.model('OrganizationNode');
+var JobPosition = mongoose.model('JobPosition');
 var async = require('async');
 var winston = require('winston');
 var utils = require('../../lib/utils');
@@ -90,13 +91,18 @@ exports.manage = function (req, res, next) {
 		OrganizationNode.find(callback);
 	}, function (callback) {
 		User.find(callback);
+	}, function (callback) {
+		JobPosition
+			.find()
+			.select('_id name')
+			.exec(callback);
 	}], function (err, results) {
 		if (err) {
 			winston.error(err);
 			return next(err);
 		}
 
-		res.render('users/manage', {orgNodes: results[0], users: results[1]});
+		res.render('users/manage', {orgNodes: results[0], users: results[1], jobPosition: results[2]});
 	});
 };
 

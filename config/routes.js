@@ -18,6 +18,7 @@ var workflow = require('workflow');
 var item = require('item');
 var installation = require('installation');
 var role = require('role');
+var jobPosition = require('jobPosition');
 
 /**
  * Route middlewares
@@ -49,6 +50,14 @@ module.exports = function (app, passport) {
     app.get('/users/:userId', users.show);
 
     app.param('userId', users.load);
+
+    // jobPosition routes
+    app.get('/jobPosition', jobPosition.index);
+    app.get('/jobPosition/new', jobPosition.new);
+    app.get('/jobPosition/edit/:jobPositionId', jobPosition.edit);
+    app.put('/jobPosition/:jobPositionId', jobPosition.update);
+    app.post('/jobPosition', jobPosition.create);
+    app.delete('/jobPosition/:jobPositionId', jobPosition.delete);
 
     // role routes
     app.get('/role', role.index);

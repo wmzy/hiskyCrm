@@ -1,24 +1,24 @@
 extends ../layouts/defualt
 
 block title
-   title 角色管理 - #{pkg.name}
+   title 岗位管理 - #{pkg.name}
 
 block content
    div.row.col-md-6.col-md-offset-2.custyle
       table.table.table-striped.custab
          thead
-            a.btn.btn-primary.btn-xs.pull-right(data-toggle='modal', data-target='#addRole')
+            a.btn.btn-primary.btn-xs.pull-right(data-toggle='modal', data-target='#addJobPosition')
                b +添加
             tr
-               th 角色名称
+               th 岗位名称
                th 描述
                th.text-center 操作
          tbody
-            each role in roles
+            each jobPosition in jobPositions
                tr
-                  td #{role.name}
-                  td #{role.description}
-                  td.text-center.btn-toolbar(data-id=role._id.toString())
+                  td #{jobPosition.name}
+                  td #{jobPosition.description}
+                  td.text-center.btn-toolbar(data-id=jobPosition._id.toString())
                      a.btn.btn-info.btn-xs
                         span.glyphicon.glyphicon-edit
                         | 修改
@@ -26,27 +26,31 @@ block content
                         span.glyphicon.glyphicon-remove
                         | 删除
 
-   #addRole.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+   #addJobPosition.modal.fade(tabindex='-1', jobPosition='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
          .modal-content
             .modal-header
                button.close(type='button', data-dismiss='modal')
                   span(aria-hidden='true') ×
                   span.sr-only 关闭
-               h4#myModalLabel.modal-title 添加角色
+               h4#myModalLabel.modal-title 添加岗位
             .modal-body
                form.clearfix
                   .form-group
                      label.col-md-3.control-label(for='name') 名称
                      .col-md-9
-                        input#name.form-control(name='name', type='text', placeholder='角色名称')
+                        input#name.form-control(name='name', type='text', placeholder='岗位名称')
                   .form-group
                      label.col-md-3.control-label(for='description') 描述
                      .col-md-9
-                        textarea#description.form-control(name='description', placeholder='请输入角色的描述......', rows='5')
+                        textarea#description.form-control(name='description', placeholder='请输入岗位的职责描述......', rows='5')
+                  .form-group
+                     label.col-md-3.control-label(for='requirements') 要求
+                     .col-md-9
+                        textarea#description.form-control(name='requirements', placeholder='请输入岗位要求......', rows='5')
             .modal-footer
                button.btn.btn-default(type='button', data-dismiss='modal') 取消
-               button#saveRole.btn.btn-primary(type='button') 保存
+               button#saveJobPosition.btn.btn-primary(type='button') 保存
 
 
 block foot-script
@@ -57,7 +61,7 @@ block foot-script
                var $self = $(this);
                $.ajax({
                   type: 'DELETE',
-                  url: '/role/' + $self.parent().data('id')
+                  url: '/jobPosition/' + $self.parent().data('id')
                }).done(function () {
                   var $tr = $self.parents('tr')[0];
                   $tr.remove();
@@ -67,28 +71,28 @@ block foot-script
                });
             });
 
-            $('#saveRole').click(function () {
+            $('#saveJobPosition').click(function () {
                $.ajax({
                   type: 'POST',
-                  url: '/role',
+                  url: '/jobPosition',
                   data: $('form').serialize()
-               }).done(function (role) {
+               }).done(function (jobPosition) {
                   var $tb = $('tbody').first();
                   var $tr = $tb.children('tr').last().clone();
                   var $tds = $tr.children('td');
-                  $tds.eq(0).text(role.name);
-                  $tds.eq(1).text(role.description);
-                  $tds.eq(2).data('id', role._id.toString());
+                  $tds.eq(0).text(jobPosition.name);
+                  $tds.eq(1).text(jobPosition.description);
+                  $tds.eq(2).data('id', jobPosition._id.toString());
                   $tr.appendTo($tb);
                   console.log($tb[0]);
                   console.log($tr[0]);
-                  $('#addRole').modal('hide');
+                  $('#addJobPosition').modal('hide');
                }).fail(function (jqxhr) {
                   console.log(jqxhr.status);
                   console.log(jqxhr.responseJSON);
                });
             });
-            $('#addRole').on('hidden.bs.modal', function () {
+            $('#addJobPosition').on('hidden.bs.modal', function () {
                $(this).find('form')[0].reset();
             });
          });

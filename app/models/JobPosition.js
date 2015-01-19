@@ -15,7 +15,7 @@ var ObjectId = Schema.Types.ObjectId;
 var JobPositionSchema = new Schema({
     name: {type: String, required: true},
     description: {type: String, default: ''},
-    requirements: String,
+    requirements: {type: String, default: ''},
     numberOfEmployees: { type: Number, default: 0 },
     createdBy: {
         user: {type: ObjectId, ref: 'Users'},
