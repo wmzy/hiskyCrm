@@ -25,6 +25,7 @@ var InstallationSchema = new Schema({
 		from: Date,
 		to: Date
 	},
+	machineNo: {type: String, required: true},
 	log: {
 		files: [String]
 	}

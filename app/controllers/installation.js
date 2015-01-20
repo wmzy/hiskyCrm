@@ -23,6 +23,31 @@ exports.task = function (req, res, next) {
 		});
 };
 
+exports.newLog = function (req, res) {
+	res.render('installation/newLog', {_id: req.params.installationId});
+};
+
+exports.addLog = function (req, res, next) {
+	Installation.findById(req.params.installationId, function (err, installation) {
+		if (err) {
+			winston.error(err);
+			return next(err);
+		}
+
+		installation = extend(installation, req.body);
+		installation.state = '完成';
+		installation.task.to = new Date();
+		installation.save(function (err) {
+			if (err) {
+				winston.error(err);
+				req.flash('err', err);
+			}
+
+			res.redirect('/installation');
+		});
+	});
+};
+
 exports.newTask = function (req, res) {
 	res.render('installation/newTask');
 };
@@ -72,6 +97,45 @@ exports.updateTask = function (req, res, next) {
 
 			res.redirect('/installation');
 		});
+	});
+};
+
+exports.startTask = function (req, res) {
+	async.waterfall([function (callback) {
+		Installation.findById(req.params.taskId, callback);
+	}, function (installation, callback) {
+		if (installation.state !== '未开始') {
+			return callback(new Error('任务已经开始！'));
+		}
+		installation.state = '开始';
+		installation.task.from = new Date();
+		installation.save(callback);
+	}], function (err, installation) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, err);
+		}
+		console.log(installation);
+
+		res.json(installation);
+	});
+};
+
+exports.deleteTask = function (req, res) {
+	async.waterfall([function (callback) {
+		Installation.findById(req.params.taskId, callback);
+	}, function (installation, callback) {
+		if (installation.state !== '未开始') {
+			return callback(new Error('只能删除未开始任务！'));
+		}
+		installation.remove(callback);
+	}], function (err) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, err);
+		}
+
+		res.json(200);
 	});
 };
 
