@@ -61,7 +61,8 @@ block content
 		.modal-body
 			.container
 				form
-					input#connctionId(type='hidden')
+					input#sepUuid(type='hidden')
+					input#tepUuid(type='hidden')
 					.form-group
 						.checkbox
 							label
@@ -86,11 +87,11 @@ block content
 					.form-group
 						.checkbox
 							label
-								input#isOptional(type='checkbox')
+								input#tt(type='checkbox')
 								| 是否手选
 					.form-group
-						label(for='test') 条件
-						textarea#test.form-control(type='text', rows='3')
+						label(for='ee') 条件
+						textarea#ee.form-control(type='text', rows='3')
 		.modal-footer
 			button.btn.btn-default(type='button', data-dismiss='modal') 取消
 			button#savenode.btn.btn-primary(type='button') 保存
@@ -107,8 +108,6 @@ block foot-script
 						window.close();
 					}
 				});
-				$('#form').submit(function () {
-				});
 
 				$('#designer').one('shown.bs.modal', function () {
 					jsPlumb.ready(function () {
@@ -116,20 +115,31 @@ block foot-script
 							Container: 'designerContainer',
 							DragOptions: {cursor: 'pointer', zIndex: 2000},
 							Endpoint: ["Dot", {radius: 10}],
-							HoverPaintStyle: {strokeStyle: "#42a62c", lineWidth: 2},
+							HoverPaintStyle: {strokeStyle: "#42a62c", lineWidth: 8},
 							ConnectionOverlays: [
 								["Arrow", {location: -7, id: "arrow", length: 14, foldback: 0.8}],
 								["Label", {location: 0.1, id: "label"}]
 							]
 						});
 
-						var startPoint = {
+						// 用于记录当前编辑属性的对象
+						var currentConnection = null;
+						var currentNode = null;
+						var uuid = (function () {
+							var _uuid = 0;
+							return function () {
+								return 'node_' + ++_uuid;
+							}
+						})();
+						var sourcePoint = {
+							uuid: 'start_ep',
 							isSource: true,
 							isTarget: false,
 							maxConnections: -1,
 							anchor: "Right"
 						};
-						var endPoint = {
+						var targetPoint = {
+							uuid: 'end_ep',
 							isSource: false,
 							isTarget: true,
 							maxConnections: -1,
@@ -138,8 +148,8 @@ block foot-script
 							endpoint: ["Rectangle", {width: 12, height: 12}]
 						};
 
-						jsPlumb.addEndpoint('start', startPoint);
-						jsPlumb.addEndpoint('end', endPoint);
+						jsPlumb.addEndpoint('start', sourcePoint);
+						jsPlumb.addEndpoint('end', targetPoint);
 
 						// todo: add event context menu
 						$('#designerContainer').contextMenu({
@@ -154,8 +164,19 @@ block foot-script
 								"edit": {name: "Edit", icon: "edit"},
 								"cut": {name: "Cut", icon: "cut"},
 								"copy": {name: "Copy", icon: "copy"},
-								"paste": {name: "Paste", icon: "paste"},
-								"delete": {name: "Delete", icon: "delete"},
+								"delete": {
+									name: "Delete",
+									icon: "delete",
+									callback: function(key, option) {
+										console.log(option);
+										console.log(this);
+										jsPlumb.detachAllConnections(this);
+										jsPlumb.getEndpoints(this).forEach(function (e) {
+											jsPlumb.deleteEndpoint(e);
+										});
+										this.remove();
+									}
+								},
 								"sep1": "---------",
 								"quit": {name: "Quit", icon: "quit"}
 							}
@@ -170,7 +191,11 @@ block foot-script
 									icon: "new",
 									callback: function (key, option) {
 										var el = $(taskNode).appendTo('#designerContainer');
-										jsPlumb.addEndpoints(el, [startPoint, endPoint]);
+										var id = uuid();
+										el.attr('id', id);
+										sourcePoint.uuid = 'sep_' + id;
+										targetPoint.uuid = 'tep_' + id;
+										jsPlumb.addEndpoints(el, [sourcePoint, targetPoint]);
 										jsPlumb.draggable(el);
 									}
 								},
@@ -199,44 +224,31 @@ block foot-script
 
 						// 保存属性
 						$('#saveconn').click(function () {
-							// todo: jsPlumb.
+							//jsPlumb.getEndpoint($('#sepUuid').val());
+							var p = currentConnection.getParameters();
+							p.isOptional = $('#isOptional').is(':checked');
+							p.test = $('#test').val();
+							currentConnection.setLabel('test');
+						});
+						$('#conn-modal').on('hidden.bs.modal', function() {
+							$(this).find('form')[0].reset();
 						});
 
+						// 单击编辑连接属性
 						jsPlumb.bind("click", function (connection) {
+							//$('#sepUuid').val(connection.endpoints[0].getUuid());
+							//$('#tepUuid').val(connection.endpoints[1].getUuid());
+							var p = connection.getParameters();
+							$('#isOptional').prop('checked', p.isOptional);
+							$('#test').val(p.test);
+							currentConnection = connection;
 							$('#conn-modal').modal('show');
 						});
 						// 双击取消连接
 						jsPlumb.bind("dblclick", function (connection, originalEvent) {
+							alert();
 							jsPlumb.detach(connection);
 						});
-						//// 连接的元素
-						//// 本例中.node既是源头又是目标
-						//var nodeList = $(".node");
-						//nodeList.each(function (i, e) {
-						//	// 设置连接的源元素
-						//	jsPlumb.makeSource($(e), {
-						//		filter: ".ep", // .ep元素用于拖动连接
-						//		anchor: "Continuous",
-						//		connector: ["Flowchart", {curviness: 20}], // 连接的方式为流程图
-						//		connectorStyle: {strokeStyle: "#014ae1", lineWidth: 2},
-						//		maxConnections: -1 // 最大连接数不限
-						//	});
-						//});
-						//// 设置连接目标
-						//jsPlumb.makeTarget(nodeList, {
-						//	dropOptions: {hoverClass: "dragHover"},
-						//	anchor: "Continuous"
-						//});
-						// 初始化所有连接元素为可拖动
-						//var start = $('#start');
-						//jsPlumb.makeSource(start, {
-						//	filter: ".ep", // .ep元素用于拖动连接
-						//	anchor: "Continuous",
-						//	connector: ["Flowchart", { curviness: 20 }], // 连接的方式为流程图
-						//	connectorStyle: { strokeStyle: "#014ae1", lineWidth: 2 },
-						//	maxConnections: -1 // 最大连接数不限
-						//});
-						//jsPlumb.draggable($('.node'));
 						jsPlumb.draggable($('.node'));
 
 					});
