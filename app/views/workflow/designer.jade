@@ -49,8 +49,9 @@ block content
 						#end.node(data-id=-1)
 							strong end
 				.modal-footer
+					button#designer-reset.btn.btn-danger(type='button') 重置
 					button.btn.btn-default(type='button', data-dismiss='modal') 关闭
-					button.btn.btn-primary(type='button') 保存
+					button#designer-save.btn.btn-primary(type='button') 保存
 
 	#conn-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 		.modal-header
@@ -61,16 +62,12 @@ block content
 		.modal-body
 			.container
 				form
-					input#sepUuid(type='hidden')
-					input#tepUuid(type='hidden')
-					.form-group
-						.checkbox
-							label
-								input#isOptional(type='checkbox')
-								| 是否手选
-					.form-group
-						label(for='test') 条件
-						textarea#test.form-control(type='text', rows='3')
+					label
+						input#isOptional(type='checkbox')
+						| 是否手选
+				.form-group
+					label(for='test') 条件
+					textarea#test.form-control(type='text', rows='3')
 		.modal-footer
 			button.btn.btn-default(type='button', data-dismiss='modal') 取消
 			button#saveconn.btn.btn-primary(type='button') 保存
@@ -83,15 +80,27 @@ block content
 		.modal-body
 			.container
 				form
-					input#nodeId(type='hidden')
 					.form-group
-						.checkbox
-							label
-								input#tt(type='checkbox')
-								| 是否手选
+						label(for='node-name') 名称
+						input#node-name.form-control(type='text')
 					.form-group
-						label(for='ee') 条件
-						textarea#ee.form-control(type='text', rows='3')
+						label(for='node-description') 描述
+						textarea#description.form-control(type='text', rows='3')
+					.form-group
+						label(for='node-testStart') 执行条件
+						textarea#node-testStart.form-control(type='text', rows='3')
+					.form-group
+						label(for='node-processorsSelector') 处理人选择
+						textarea#node-processorsSelector.form-control(type='text', rows='3')
+					.form-group
+						label(for='node-processorsStrategy') 处理人选择策略
+						input#node-processorsStrategy.form-control(type='text')
+					.form-group
+						label(for='node-formSchemaOf') 数据模型
+						input#node-formSchemaOf.form-control(type='text')
+					.form-group
+						label(for='node-formViewId') 表单
+						input#node-formViewId.form-control(type='text')
 		.modal-footer
 			button.btn.btn-default(type='button', data-dismiss='modal') 取消
 			button#savenode.btn.btn-primary(type='button') 保存
@@ -154,23 +163,40 @@ block foot-script
 						// todo: add event context menu
 						$('#designerContainer').contextMenu({
 							selector: '.node',
-							callback: function(key, options, o) {
+							callback: function (key, options, o) {
 								var m = "clicked: " + key;
 								console.log(m);
 								console.log(options);
 								console.log(o);
 							},
 							items: {
-								"edit": {name: "Edit", icon: "edit"},
-								"cut": {name: "Cut", icon: "cut"},
-								"copy": {name: "Copy", icon: "copy"},
+								"edit": {
+									name: "属性",
+									icon: "edit",
+									callback: function () {
+										var property = this.data('nodeProperty');
+										if (property) {
+											$('#node-name').val(property.name);
+											$('#node-description').val(property.description);
+											$('#node-testStart').val(property.testStart);
+											$('#node-processorsSelector').val(property.processorsSelector);
+											$('#node-processorsStrategy').val(property.processorsStrategy);
+											$('#node-formSchemaOf').val(property.formSchemaOf);
+											$('#node-formViewId').val(property.formViewId);
+										}
+										currentNode = this;
+										$('#node-modal').modal('show');
+									}
+								},
+								"cut": {name: "剪切", icon: "cut"},
+								"copy": {name: "复制", icon: "copy"},
 								"delete": {
-									name: "Delete",
+									name: "删除",
 									icon: "delete",
 									disabled: function () {
 										return this.is('#start,#end');
 									},
-									callback: function(key, option) {
+									callback: function (key, option) {
 										jsPlumb.detachAllConnections(this);
 										jsPlumb.getEndpoints(this).forEach(function (e) {
 											jsPlumb.deleteEndpoint(e);
@@ -223,22 +249,38 @@ block foot-script
 							});
 						});
 
-						// 保存属性
+						// 保存连接属性
 						$('#saveconn').click(function () {
-							//jsPlumb.getEndpoint($('#sepUuid').val());
 							var p = currentConnection.getParameters();
 							p.isOptional = $('#isOptional').is(':checked');
 							p.test = $('#test').val();
+							$('#conn-modal').modal('hide');
 							currentConnection.setLabel('test');
 						});
-						$('#conn-modal').on('hidden.bs.modal', function() {
+						$('#conn-modal').on('hidden.bs.modal', function () {
+							$(this).find('form')[0].reset();
+						});
+
+						// 保存节点属性
+						$('#savenode').click(function () {
+							var property = {};
+							property.name = $('#node-name').val();
+							property.description = $('#node-description').val();
+							property.testStart = $('#node-testStart').val();
+							property.processorsSelector = $('#node-processorsSelector').val();
+							property.processorsStrategy = $('#node-processorsStrategy').val();
+							property.formSchemaOf = $('#node-formSchemaOf').val();
+							property.formViewId = $('#node-formViewId').val();
+							currentNode.data('property', property);
+							currentNode.children('strong').text(property.name);
+							$('#node-modal').modal('hide');
+						});
+						$('#node-modal').on('hidden.bs.modal', function () {
 							$(this).find('form')[0].reset();
 						});
 
 						// 单击编辑连接属性
 						jsPlumb.bind("click", function (connection) {
-							//$('#sepUuid').val(connection.endpoints[0].getUuid());
-							//$('#tepUuid').val(connection.endpoints[1].getUuid());
 							var p = connection.getParameters();
 							$('#isOptional').prop('checked', p.isOptional);
 							$('#test').val(p.test);
@@ -252,6 +294,16 @@ block foot-script
 						});
 						jsPlumb.draggable($('.node'));
 
+						$('#designer-reset').click(function () {
+							jsPlumb.reset();
+							$('#designerContainer').clear();
+						});
+
+						$('#designer-save').click(function () {
+							var nodes = [];
+							nodes.push($('#start'));
+							
+						});
 					});
 				});
 			});
