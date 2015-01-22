@@ -167,9 +167,10 @@ block foot-script
 								"delete": {
 									name: "Delete",
 									icon: "delete",
+									disabled: function () {
+										return this.is('#start,#end');
+									},
 									callback: function(key, option) {
-										console.log(option);
-										console.log(this);
 										jsPlumb.detachAllConnections(this);
 										jsPlumb.getEndpoints(this).forEach(function (e) {
 											jsPlumb.deleteEndpoint(e);
