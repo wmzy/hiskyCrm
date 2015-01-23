@@ -296,17 +296,19 @@ block foot-script
 
 						$('#designer-reset').click(function () {
 							jsPlumb.reset();
-							$('#designerContainer').clear();
+							$('#designerContainer').empty();
+							// todo: add start and end
 						});
 
 						$('#designer-save').click(function () {
-							var nodes = $('#designerContainer').children();
+							var nodes = $('#designerContainer').children('.node');
 							var err = null;
-							nodes.forEach(function (node) {
-								if (jsPlumb.getEndpoints(node).every(function (ep) {
+							nodes.each(function () {
+								var $this = $(this);
+								if (!jsPlumb.getEndpoints($this).every(function (ep) {
 													return ep.connections.length;
 												})) {
-									err = new Error('节点【' + node.text() + '】无效！');
+									err = new Error('节点【' + $this.text() + '】无效！');
 									return false;
 								}
 							});
