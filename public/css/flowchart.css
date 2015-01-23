@@ -31,6 +31,9 @@
     height: 100%;
     padding: 0;
 }
+#designer .modal-header {
+    position: relative;
+}
 #designer .modal-body {
     width: 100%;
     height: 100%;
@@ -38,6 +41,7 @@
     padding-bottom: 64px;
     margin-top: -56px;
     padding-top: 56px;
+    position: static;
 }
 #designerContainer {
     height: 100%;
