@@ -42,6 +42,7 @@
     margin-top: -56px;
     padding-top: 56px;
     position: static;
+    overflow: visible;
 }
 #designerContainer {
     height: 100%;
