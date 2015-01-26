@@ -44,9 +44,9 @@ block content
 					h4.modal-title 流程设计
 				.modal-body
 					#designerContainer.designerContainer
-						#start.node(data-id=0)
+						#start.node
 							strong start
-						#end.node(data-id=-1)
+						#end.node
 							strong end
 				.modal-footer
 					button#designer-reset.btn.btn-danger(type='button') 重置
@@ -179,10 +179,14 @@ block foot-script
 											$('#node-name').val(property.name);
 											$('#node-description').val(property.description);
 											$('#node-testStart').val(property.testStart);
-											$('#node-processorsSelector').val(property.processorsSelector);
-											$('#node-processorsStrategy').val(property.processorsStrategy);
-											$('#node-formSchemaOf').val(property.formSchemaOf);
-											$('#node-formViewId').val(property.formViewId);
+											if (property.processors) {
+												$('#node-processorsSelector').val(property.processors.selector);
+												$('#node-processorsStrategy').val(property.processors.strategy);
+											}
+											if(property.form) {
+												$('#node-formSchemaOf').val(property.form.schemaOf);
+												$('#node-formViewId').val(property.form.viewId);
+											}
 										}
 										currentNode = this;
 										$('#node-modal').modal('show');
@@ -267,10 +271,12 @@ block foot-script
 							property.name = $('#node-name').val();
 							property.description = $('#node-description').val();
 							property.testStart = $('#node-testStart').val();
-							property.processorsSelector = $('#node-processorsSelector').val();
-							property.processorsStrategy = $('#node-processorsStrategy').val();
-							property.formSchemaOf = $('#node-formSchemaOf').val();
-							property.formViewId = $('#node-formViewId').val();
+							property.processors = {};
+							property.processors.selector = $('#node-processorsSelector').val();
+							property.processors.strategy = $('#node-processorsStrategy').val();
+							property.form = {};
+							property.form.schemaOf = $('#node-formSchemaOf').val();
+							property.form.viewId = $('#node-formViewId').val();
 							currentNode.data('property', property);
 							currentNode.children('strong').text(property.name);
 							$('#node-modal').modal('hide');
@@ -296,27 +302,53 @@ block foot-script
 
 						$('#designer-reset').click(function () {
 							jsPlumb.reset();
-							$('#designerContainer').empty();
-							// todo: add start and end
+							$('#designerContainer')
+											.empty()
+											.append('<div id="start" class="node"><strong>start</strong></div><div id="end" class="node"><strong>end</strong></div>');
+
+							jsPlumb.addEndpoint('start', sourcePoint);
+							jsPlumb.addEndpoint('end', targetPoint);
 						});
 
 						$('#designer-save').click(function () {
 							var nodes = $('#designerContainer').children('.node');
+							var nodesData = [];
 							var err = null;
 							nodes.each(function () {
 								var $this = $(this);
-								if (!jsPlumb.getEndpoints($this).every(function (ep) {
+								var eps = jsPlumb.getEndpoints($this);
+								if (!eps.every(function (ep) {
 													return ep.connections.length;
 												})) {
 									err = new Error('节点【' + $this.text() + '】无效！');
 									return false;
 								}
+
+								var node = $this.data('property') || {};
+								node.nextNodes = [];
+								node.waitNodes = [];
+								eps.forEach(function (e) {
+									if (e.isSource) {
+										e.connections.forEach(function (con) {
+											node.nextNodes.push($.extend({
+												id: con.targetId
+											}, con.getParameters()));
+										});
+									} else if (e.isTarget) {
+										e.connections.forEach(function (con) {
+											node.waitNodes.push(con.sourceId);
+										});
+									}
+								});
+								nodesData.push(node);
 							});
 							if (err) {
 								alert(err);
 								return;
 							}
 
+							$('#form').data('nodes', nodesData);
+							$('#designer').modal('hide');
 						});
 					});
 				});
