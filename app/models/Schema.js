@@ -32,7 +32,7 @@ var ViewSchema = new Schema({
 		required: true,
 		enum: ['new', 'modify', 'delete']
 	},
-	layout: [String],
+	layout: String,
 	fields: [{
 		fieldId: ObjectId,
 		operation: { type: String, default: 'read', enum: ['read', 'write'] }

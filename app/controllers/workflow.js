@@ -34,10 +34,10 @@ exports.create = function (req, res) {
 	workflow.save(function (err) {
 		if (err) {
 			winston.error(err);
-			req.flash('err', err);
+			return res.json(422, err);
 		}
 
-		res.redirect('/workflow');
+		res.json(200);
 	});
 };
 

@@ -13,6 +13,7 @@ var ObjectId = Schema.Types.ObjectId;
  */
 
 var NodeSchema = new Schema({
+	_id: {type:String, required: true, unique: true},
 	name: {type: String, required: true},
 	description: {type: String, default: ''},
 	testStart: String,// 上一节点完成时，检查是否开始本节点
@@ -24,9 +25,9 @@ var NodeSchema = new Schema({
 		schemaOf: {type: ObjectId, ref: 'Schema'},
 		viewId: ObjectId
 	},
-	waitNodes: [ObjectId],
+	waitNodes: [String],
 	nextNodes: [{
-		id: ObjectId,
+		id: String,
 		isOptional: Boolean,
 		test: String
 	}],
@@ -42,15 +43,16 @@ var WorkflowSchema = new Schema({
 	description: {type: String, default: ''},
 	owner: {type: ObjectId, ref: 'User'},
 	nodes: [NodeSchema],
-	allows: [{type: ObjectId, ref: 'User'}],
-	deny: [{type: ObjectId, ref: 'Role'}]
+	version: String
 });
 
 /**
  * Setters
  */
 
-
+//NodeSchema.path('form.schemaOf').set(function (v) {
+//	return v || undefined;
+//});
 
 /**
  * Virtuals
@@ -61,6 +63,11 @@ var WorkflowSchema = new Schema({
  * Validations
  */
 
+NodeSchema.path('form.schemaOf').validate(function (v) {
+	console.log('v');
+	console.log(v);
+	return true;
+});
 
 /**
  * Pre-save hook
