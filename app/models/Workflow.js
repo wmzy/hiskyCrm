@@ -21,10 +21,7 @@ var NodeSchema = new Schema({
 		selector: String,
 		strategy: {type: String, enum: ['preemption', 'cooperation'], default: 'preemption'}
 	},
-	form: {
-		schemaOf: {type: ObjectId, ref: 'Schema'},
-		viewId: ObjectId
-	},
+	formId: ObjectId,
 	waitNodes: [String],
 	nextNodes: [{
 		id: String,
@@ -40,6 +37,7 @@ var NodeSchema = new Schema({
 
 var WorkflowSchema = new Schema({
 	name: {type: String, required: true},
+	schemaOf: {type: ObjectId, ref: 'Schema'},
 	description: {type: String, default: ''},
 	owner: {type: ObjectId, ref: 'User'},
 	nodes: [NodeSchema],
@@ -63,11 +61,6 @@ var WorkflowSchema = new Schema({
  * Validations
  */
 
-NodeSchema.path('form.schemaOf').validate(function (v) {
-	console.log('v');
-	console.log(v);
-	return true;
-});
 
 /**
  * Pre-save hook

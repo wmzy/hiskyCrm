@@ -21,6 +21,36 @@ exports.index = function (req, res, next) {
 	});
 };
 
+exports.search = function (req, res) {
+	Schema.find().select('name').exec(function (err, schemas) {
+		if (err) {
+			winston.error(err);
+			return res.send(422);
+		}
+		res.json(schemas);
+	});
+};
+
+exports.forms = function (req, res) {
+	Schema.findById(req.params.schemaId).select('forms').exec(function (err, schema) {
+		if (err) {
+			winston.error(err);
+			return res.send(422);
+		}
+		res.json(schema.forms);
+	});
+};
+
+exports.formEdit = function (req, res, next) {
+	Schema.findById(req.params.schemaId).select('forms').exec(function (err, schema) {
+		if (err) {
+			winston.error(err);
+			return next(err);
+		}
+		res.render('schema/form', schema.forms);
+	});
+};
+
 exports.new = function (req,res) {
 	res.render('schema/new');
 };

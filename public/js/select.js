@@ -1,13 +1,5 @@
 require(['jquery', 'selectize'], function ($) {
 	$(function () {
-		$('#cancel').click(function () {
-			if (history.length) {
-				history.back();
-			} else {
-				window.close();
-			}
-		});
-
 		var renders = {
 			member: {
 				item: function (item, escape) {

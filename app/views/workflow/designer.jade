@@ -23,6 +23,10 @@ block content
 							.col-md-9
 								input#name.form-control(name='name', type='text', placeholder='流程名称')
 						.form-group
+							label.col-md-2.control-label(for='schemaOf') 数据模型
+							.col-md-9
+								input#schemaOf.form-control(type='text', placeholder='请选择数据模型')
+						.form-group
 							label.col-md-2.control-label(for='description') 描述
 							.col-md-9
 								textarea#description.form-control(name='description', placeholder='请输入流程的描述......', rows='5')
@@ -44,9 +48,9 @@ block content
 					h4.modal-title 流程设计
 				.modal-body
 					#designerContainer.designerContainer
-						#start.node
+						#start.node(data-property={name: 'start'})
 							strong start
-						#end.node
+						#end.node(data-property={name: 'end'})
 							strong end
 				.modal-footer
 					button#designer-reset.btn.btn-danger(type='button') 重置
@@ -60,7 +64,7 @@ block content
 				span.sr-only 关闭
 			h4.modal-title 分支条件
 		.modal-body
-			.container
+			.container-fluid
 				form
 					label
 						input#isOptional(type='checkbox')
@@ -78,7 +82,7 @@ block content
 				span.sr-only 关闭
 			h4.modal-title 分支条件
 		.modal-body
-			.container
+			.container-fluid
 				form
 					.form-group
 						label(for='node-name') 名称
@@ -96,11 +100,8 @@ block content
 						label(for='node-processorsStrategy') 处理人选择策略
 						input#node-processorsStrategy.form-control(type='text')
 					.form-group
-						label(for='node-formSchemaOf') 数据模型
-						input#node-formSchemaOf.form-control(type='text')
-					.form-group
-						label(for='node-formViewId') 表单
-						input#node-formViewId.form-control(type='text')
+						label(for='node-formId') 表单
+						input#node-formId.form-control(type='text')
 		.modal-footer
 			button.btn.btn-default(type='button', data-dismiss='modal') 取消
 			button#savenode.btn.btn-primary(type='button') 保存
@@ -108,7 +109,7 @@ block content
 
 block foot-script
 	script.
-		require(['jquery', 'jqueryUI', 'jsPlumb', 'contextMenu', 'bootstrap-modal'], function ($) {
+		require(['jquery', 'jqueryUI', 'jsPlumb', 'contextMenu', 'bootstrap-modal', 'selectize'], function ($) {
 			$(function () {
 				$('#cancel').click(function () {
 					if (history.length) {
@@ -118,10 +119,36 @@ block foot-script
 					}
 				});
 
+				$('#schemaOf').selectize({
+					maxItems: 1,
+					valueField: '_id',
+					labelField: 'name',
+					searchField: ['name'],
+					preload: true,
+					load: function (q, cb) {
+						if (q) return cb();
+						$.get('/schema/search', function (res) {
+							cb(res);
+						});
+					},
+					onChange: function (v) {
+						$('#node-formId')[0].selectize.load(function (cb) {
+							$.get('/schema/formsOf/' + v, cb);
+						});
+					}
+				})
+
+				$('#node-formId').selectize({
+					maxItems: 1,
+					valueField: '_id',
+					labelField: 'name'
+				});
+
 				$('#save').click(function () {
 					var postData = {
 						name: $('#name').val(),
-						description: $('#descriprion').val(),
+						schemaOf: $('#schemaOf').val() || undefined,
+						description: $('#description').val(),
 						nodes: $('#form').data('nodes')
 					};
 
@@ -202,10 +229,7 @@ block foot-script
 												$('#node-processorsSelector').val(property.processors.selector);
 												$('#node-processorsStrategy').val(property.processors.strategy);
 											}
-											if(property.form) {
-												$('#node-formSchemaOf').val(property.form.schemaOf);
-												$('#node-formViewId').val(property.form.viewId);
-											}
+											$('#node-formId').val(property.formId);
 										}
 										currentNode = this;
 										$('#node-modal').modal('show');
@@ -240,9 +264,11 @@ block foot-script
 									name: "新建节点",
 									icon: "new",
 									callback: function (key, option) {
-										var el = $(taskNode).appendTo('#designerContainer');
 										var id = uuid();
-										el.attr('id', id);
+										var el = $(taskNode)
+														.attr('id', id)
+														.data('property', {name: '新节点'})
+														.appendTo('#designerContainer');
 										sourcePoint.uuid = 'sep_' + id;
 										targetPoint.uuid = 'tep_' + id;
 										jsPlumb.addEndpoints(el, [sourcePoint, targetPoint]);
@@ -291,11 +317,9 @@ block foot-script
 							property.description = $('#node-description').val();
 							property.testStart = $('#node-testStart').val();
 							property.processors = {};
-							property.processors.selector = $('#node-processorsSelector').val();
-							property.processors.strategy = $('#node-processorsStrategy').val();
-							property.form = {};
-							property.form.schemaOf = $('#node-formSchemaOf').val();
-							property.form.viewId = $('#node-formViewId').val();
+							property.processors.selector = $('#node-processorsSelector').val() || undefined;
+							property.processors.strategy = $('#node-processorsStrategy').val() || undefined;
+							property.formId = $('#node-formId').val() || undefined;
 							currentNode.data('property', property);
 							currentNode.children('strong').text(property.name);
 							$('#node-modal').modal('hide');
@@ -324,6 +348,8 @@ block foot-script
 							$('#designerContainer')
 											.empty()
 											.append('<div id="start" class="node"><strong>start</strong></div><div id="end" class="node"><strong>end</strong></div>');
+							$('#start').data('property', {name: 'start'});
+							$('#end').data('property', {name: 'end'});
 
 							jsPlumb.addEndpoint('start', sourcePoint);
 							jsPlumb.addEndpoint('end', targetPoint);

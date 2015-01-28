@@ -21,10 +21,10 @@ var FieldSchema = new Schema({
 });
 
 /**
- * View Schema
+ * Forms Schema
  */
 
-var ViewSchema = new Schema({
+var FormSchema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, default: ''},
 	type: {
@@ -56,7 +56,7 @@ var SchemaSchema = new Schema({
 		date: {type: Date}
 	},
 	fields: [FieldSchema],
-	views: [ViewSchema]
+	forms: [FormSchema]
 });
 
 /**

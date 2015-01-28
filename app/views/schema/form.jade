@@ -1,0 +1,41 @@
+extends ../layouts/defualt
+
+block title
+	title 模板管理 - #{pkg.name}
+
+block main
+	.row
+		.col-lg-6
+			.form-group
+				label.col-lg-2.control-label(for='schema') 数据模型
+				.col-lg-4
+					input#schema.form-control(type='text', placeholder='请选择数据模型')
+		.col-lg-6
+			.form-group
+				label.col-lg-2.control-label(for='form') 表单
+				.col-lg-4
+					input#form.form-control(type='text', placeholder='请选择表单')
+
+block content
+	.row.col-md-6.col-md-offset-2.custyle
+
+block foot-script
+	script.
+		require(['jquery'], function ($) {
+			$(function () {
+				$('a[data-id]').click(function () {
+					var $self = $(this);
+					$.ajax({
+						type: 'DELETE',
+						url: '/schema/' + $self.data('id')
+					}).done(function () {
+						var $tr = $self.parents('tr')[0];
+						$tr.remove();
+					}).fail(function (jqxhr) {
+						console.log(jqxhr.status);
+						console.log(jqxhr.responseJSON);
+					});
+				});
+			});
+		});
+
