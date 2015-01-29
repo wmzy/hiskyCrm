@@ -21,6 +21,17 @@ exports.index = function (req, res, next) {
 	});
 };
 
+exports.detail = function (req, res) {
+	Schema.findById(req.params.schemaId, function (err, schema) {
+		if (err) {
+			winston.error(err);
+			return res.json(422, err);
+		}
+
+		res.json(schema);
+	});
+};
+
 exports.search = function (req, res) {
 	Schema.find().select('name').exec(function (err, schemas) {
 		if (err) {
@@ -42,12 +53,12 @@ exports.forms = function (req, res) {
 };
 
 exports.formEdit = function (req, res, next) {
-	Schema.findById(req.params.schemaId).select('forms').exec(function (err, schema) {
+	Schema.find().select('name').exec(function (err, schemas) {
 		if (err) {
 			winston.error(err);
 			return next(err);
 		}
-		res.render('schema/form', schema.forms);
+		res.render('schema/form', {selected:req.params.schemaId, schemas:schemas});
 	});
 };
 

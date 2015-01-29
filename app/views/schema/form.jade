@@ -5,37 +5,147 @@ block title
 
 block main
 	.row
-		.col-lg-6
+		.col-lg-4.col-lg-offset-1
 			.form-group
 				label.col-lg-2.control-label(for='schema') 数据模型
-				.col-lg-4
-					input#schema.form-control(type='text', placeholder='请选择数据模型')
-		.col-lg-6
+				.col-lg-9
+					input#schema.form-control(type='text', value=selected || null, data-options=schemas, placeholder='请选择数据模型')
+		.col-lg-4.col-lg-offset-1
 			.form-group
-				label.col-lg-2.control-label(for='form') 表单
-				.col-lg-4
-					input#form.form-control(type='text', placeholder='请选择表单')
+				label.col-lg-2.control-label(for='formId') 表单
+				.col-lg-8
+					input#formId.form-control(type='text', placeholder='请选择表单')
+				.col-lg-2
+					button#newForm.btn.btn-primary(type='button') 添加
+
 
 block content
-	.row.col-md-6.col-md-offset-2.custyle
+	.row:.col-lg-8.col-lg-offset-2
+		#fieldtemplate.form-group.hidden.btn-toolbar
+			label.col-lg-1.control-label.col-lg-offset-1 字段
+			.col-lg-3
+				input.form-control.input-lg(name='fieldId', type='text', placeholder='选择字段……', required='')
+			label.col-lg-1.control-label 权限
+			.col-lg-3
+				input.form-control.input-lg(name='operation', type='text', placeholder='选择字段操作权限……')
+			button.removeField.btn.btn-labeled.btn-danger(type='button')
+				span.btn-label
+					i.glyphicon.glyphicon-minus
+			button.addField.btn.btn-labeled.btn-success(type='button')
+				span.btn-label
+					i.glyphicon.glyphicon-plus
+		form#form.form-horizontal
+			fieldset
+				legend 表单
+				.form-group
+					label.col-lg-2.control-label(for='name') 表单名称
+					.col-lg-8
+						input#name.form-control.input-md(name='name', type='text', placeholder='名称', required='')
+				.form-group
+					label.col-lg-2.control-label(for='description') 描述
+					.col-lg-8
+						textarea#description.form-control(name='description')
+				.form-group
+					label.col-lg-2.control-label(for='type') 表单类型
+					.col-lg-8
+						label.radio-inline(for='type-0')
+							input#type-0(type='radio', name='type', value='new', checked='checked')
+							|       新建
+						label.radio-inline(for='type-1')
+							input#type-1(type='radio', name='type', value='modify')
+							|       修改
+				.form-group
+					label.col-lg-2.control-label(for='layout') 布局
+					.col-lg-8
+						input#layout.form-control.input-md(name='layout', type='text', placeholder='请选择表单布局……')
+				#fields
+					.form-group
+						.col-lg-4.col-lg-push-1
+							button.addField.btn.btn-success(name='addField', type='button') 添加字段
+				.form-group
+					.col-lg-8.btn-toolbar.col-lg-push-8
+						button#save.btn.btn-success(name='save', type='button') 保存
+						button#cancel.btn.btn-danger(name='cancel', type='button') 取消
+
 
 block foot-script
 	script.
-		require(['jquery'], function ($) {
+		require(['jquery', 'selectize'], function ($) {
 			$(function () {
-				$('a[data-id]').click(function () {
-					var $self = $(this);
-					$.ajax({
-						type: 'DELETE',
-						url: '/schema/' + $self.data('id')
-					}).done(function () {
-						var $tr = $self.parents('tr')[0];
-						$tr.remove();
-					}).fail(function (jqxhr) {
-						console.log(jqxhr.status);
-						console.log(jqxhr.responseJSON);
+				var currentSchema, currentForm;
+
+				$('#schema').selectize({
+					maxItems: 1,
+					options: $('#schema').data('options'),
+					valueField: '_id',
+					labelField: 'name',
+					searchField: ['name'],
+					onChange: function (schemaId) {
+						$('formId')[0].selectize.load(function (cb) {
+							$.get('/schema/formsOf/' + schemaId, cb);
+						});
+					}
+				})
+
+				$('#formId').selectize({
+					maxItems: 1,
+					create: function (input, cb) {
+						$.get('/schema/' + $('#schema').val(), function (schema) {
+							currentSchema = schema;
+							$('#form')[0].reset();
+							$('#name').val(input);
+							cb(input);
+						});
+					},
+					valueField: '_id',
+					labelField: 'name',
+					onChange: function (formId) {
+					}
+				});
+
+				$('#form').submit(function () {
+					$(this).find('[name="fieldId"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][fieldId]');
+					});
+					$(this).find('[name="operation"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][operation]');
 					});
 				});
-			});
+
+				$('#fields').on('click', '.removeField', function () {
+					$(this).parents('.form-group').remove();
+				});
+				$('#fields').on('click', '.addField', function () {
+					var $field = $('#fieldtemplate')
+									.clone()
+									.removeAttr('id')
+									.insertBefore($(this).parents('.form-group').first())
+									.removeClass('hidden')
+					$field.find('[name="fieldId"]')
+									.first()
+									.selectize({
+										maxItems: 1,
+										valueField: '_id',
+										labelField: 'name',
+										earchField: ['name'],
+										options: currentSchema.fields,
+										create: false
+									});
+					$field.find('[name="operation"]')
+									.first()
+									.selectize({
+										maxItems: 1,
+										valueField: 'value',
+										labelField: 'name',
+										earchField: ['name'],
+										options: [
+											{name: '读', value:'read'},
+											{name: '写', value:'write'},
+											{name: '隐藏', value: 'hide'}
+										],
+										create: false
+									});
+				});
+			})
 		});
 

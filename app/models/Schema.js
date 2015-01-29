@@ -35,7 +35,7 @@ var FormSchema = new Schema({
 	layout: String,
 	fields: [{
 		fieldId: ObjectId,
-		operation: { type: String, default: 'read', enum: ['read', 'write'] }
+		operation: { type: String, default: 'read', enum: ['read', 'write', 'hide'] }
 	}]
 });
 
@@ -73,23 +73,6 @@ SchemaSchema.path('name').set(function (v) {
  * Virtuals
  */
 
-SchemaSchema
-	.virtual('itemModel')
-	.get(function () {
-		try {
-			return mongoose.model(this.name);
-		} catch (e) {
-			if (this.fields && this.fields.length) {
-				return mongoose.model(this.name, new Schema(this.fields.reduce(function (pre, cur) {
-					pre[cur.name] = global[cur.type] || Schema.Types[cur.type];
-					return pre;
-				}, {})), this.name);
-			}
-
-			throw e;
-		}
-	});
-
 /**
  * Validations
  */
@@ -126,7 +109,22 @@ SchemaSchema.post('remove', function (schema) {
  * Methods
  */
 
-SchemaSchema.methods = {};
+SchemaSchema.methods = {
+	getModel: function () {
+		try {
+			return mongoose.model(this.name);
+		} catch (e) {
+			if (this.fields && this.fields.length) {
+				return mongoose.model(this.name, new Schema(this.fields.reduce(function (pre, cur) {
+					pre[cur.name] = global[cur.type] || Schema.Types[cur.type];
+					return pre;
+				}, {})), this.name);
+			}
+
+			throw e;
+		}
+	}
+};
 
 /**
  * Statics

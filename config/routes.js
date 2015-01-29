@@ -96,9 +96,11 @@ module.exports = function (app, passport) {
 
 	// schema routes
 	app.get('/schema', schema.index);
+	app.get('/schema/:schemaId', schema.detail);
 	app.get('/schema/new', schema.new);
 	app.get('/schema/search', schema.search);
 	app.get('/schema/formsOf/:schemaId', schema.forms);
+	app.get('/schema/form', schema.formEdit);
 	app.get('/schema/form/:schemaId', schema.formEdit);
 	app.get('/schema/edit/:schemaId', schema.edit);
 	app.put('/schema/:schemaId', schema.update);
