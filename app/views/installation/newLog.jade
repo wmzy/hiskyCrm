@@ -5,21 +5,94 @@ block title
 
 block content
 	.row
-		.col-md-6.col-md-offset-3
-			.well.well-sm
+		.col-md-10.col-md-offset-1
+			.well.well-lg
 				form#form.form-horizontal(action='/machine/installation/log/' + _id, method='post')
+					input.hidden(name='_csrf' value=csrf_token)
+					input.hidden(name='_method' value='put')
 					fieldset
-						legend.text-center 新建装机日志
-						input.hidden(name='_csrf' value=csrf_token)
-						input.hidden(name='_method' value='put')
+						legend.text-center 培训情况描述
 						.form-group
-							label.col-md-2.control-label(for='machineNo') 主机序列号
+							label.col-md-2.control-label(for='fs1-f1') 客户名称
 							.col-md-9
-								input#machineNo.form-control(name='machineNo', type='text', placeholder='主机序列号')
+								input#fs1-f1.form-control(name='fs1-f1', type='text')
 						.form-group
-							.col-md-12.text-right.btn-toolbar
-								button#cancel.btn.btn-default(type='button') 取消
-								button#save.btn.btn-primary.btn-lg(type='submit') 新建
+							label.col-md-2.control-label(for='fs1-f2') 客户地址
+							.col-md-9
+								input#fs1-f2.form-control(name='fs1-f2', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f3') 安装科室
+							.col-md-9
+								input#fs1-f3.form-control(name='fs1-f3', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f4') 操 作 人
+							.col-md-9
+								input#fs1-f4.form-control(name='fs1-f4', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f5') 联系方式
+							.col-md-9
+								input#fs1-f5.form-control(name='fs1-f5', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f6') 主 任
+							.col-md-9
+								input#fs1-f6.form-control(name='fs1-f6', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f7') 联系方式
+							.col-md-9
+								input#fs1-f7.form-control(name='fs1-f7', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f8') 设备类型
+							.col-md-9
+								input#fs1-f8.form-control(name='fs1-f8', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f9') 主机序列号
+							.col-md-9
+								input#fs1-f9.form-control(name='fs1-f9', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f10') 软件版本
+							.col-md-9
+								input#fs1-f10.form-control(name='fs1-f10', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f11') E 超探头序列号
+							.col-md-9
+								input#fs1-f11.form-control(name='fs1-f11', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f12') 接口类型
+							.col-md-9
+								input#fs1-f12.form-control(name='fs1-f12', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f13') B 超探头序列号
+							.col-md-9
+								input#fs1-f13.form-control(name='fs1-f13', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f14') 脚踏接口类型
+							.col-md-9
+								input#fs1-f14.form-control(name='fs1-f14', type='text')
+						.form-group
+							label.col-md-2.control-label(for='fs1-f15') 当地销售经理
+							.col-md-9
+								input#fs1-f15.form-control(name='fs1-f15', type='text')
+					fieldset
+						legend.text-center 培训情况描述
+						.row
+							.col-lg-1.col-lg-offset-1 培训情况描述
+							.col-lg-10: .row
+								//- todo:
+								.form-group
+									label.col-md-2.control-label(for='fs2-f1') 主机序列号
+									.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
+								.form-group
+									label.col-md-2.control-label(for='fs2-f1') 主机序列号
+									.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
+					fieldset
+						legend.text-center 客户互动情况
+						.form-group
+							label.col-md-2.control-label(for='fs2-f1') 主机序列号
+							.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
+					.form-group
+						.col-md-12.text-right.btn-toolbar
+							button#cancel.btn.btn-default(type='button') 取消
+							button#save.btn.btn-primary.btn-lg(type='submit') 新建
 
 block foot-script
 	script.
