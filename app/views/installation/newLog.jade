@@ -75,15 +75,30 @@ block content
 					fieldset
 						legend.text-center 培训情况描述
 						.row
-							.col-lg-1.col-lg-offset-1 培训情况描述
+							.col-lg-1.col-lg-offset-1 空间要求
 							.col-lg-10: .row
-								//- todo:
-								.form-group
-									label.col-md-2.control-label(for='fs2-f1') 主机序列号
-									.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
-								.form-group
-									label.col-md-2.control-label(for='fs2-f1') 主机序列号
-									.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
+								.row
+									.col-lg-4
+										h5 是否有固定的专门的场地放置设备?
+										h5 如果没有,设备放在何处?
+									.col-lg-6: textarea#fs2-f1.form-control(name='fs2-f1', type='text')
+								.row
+									.col-lg-4
+										h5 是否有合适高度的检测床?
+									.col-lg-6: textarea#fs2-f2.form-control(name='fs2-f1', type='text')
+								.row
+									.col-lg-4
+										h5 是否有合适高度的检测椅?
+									.col-lg-6: textarea#fs2-f3.form-control(name='fs2-f1', type='text')
+								.row
+									.col-lg-4
+										h5 是否有单独足够的空间可以放置设备和检测床?
+										h5 面积多大?
+									.col-lg-6: textarea#fs2-f4.form-control(name='fs2-f1', type='text')
+								.row
+									.col-lg-4
+										h5 是否有可靠接地的电源?
+									.col-lg-6: textarea#fs2-f5.form-control(name='fs2-f1', type='text')
 					fieldset
 						legend.text-center 客户互动情况
 						.form-group
