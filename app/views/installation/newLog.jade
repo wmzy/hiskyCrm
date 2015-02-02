@@ -81,29 +81,54 @@ block content
 									.col-lg-4
 										h5 是否有固定的专门的场地放置设备?
 										h5 如果没有,设备放在何处?
-									.col-lg-6: textarea#fs2-f1.form-control(name='fs2-f1', type='text')
+									.col-lg-6: textarea#fs2-f1-1.form-control(name='fs2-f1-1', type='text')
 								.row
 									.col-lg-4
 										h5 是否有合适高度的检测床?
-									.col-lg-6: textarea#fs2-f2.form-control(name='fs2-f1', type='text')
+									.col-lg-6: textarea#fs2-f1-2.form-control(name='fs2-f1-2', type='text')
 								.row
 									.col-lg-4
 										h5 是否有合适高度的检测椅?
-									.col-lg-6: textarea#fs2-f3.form-control(name='fs2-f1', type='text')
+									.col-lg-6: textarea#fs2-f1-3.form-control(name='fs2-f1-3', type='text')
 								.row
 									.col-lg-4
 										h5 是否有单独足够的空间可以放置设备和检测床?
 										h5 面积多大?
-									.col-lg-6: textarea#fs2-f4.form-control(name='fs2-f1', type='text')
+									.col-lg-6: textarea#fs2-f1-4.form-control(name='fs2-f1-4', type='text')
 								.row
 									.col-lg-4
 										h5 是否有可靠接地的电源?
-									.col-lg-6: textarea#fs2-f5.form-control(name='fs2-f1', type='text')
+									.col-lg-6: textarea#fs2-f1-5.form-control(name='fs2-f1-5', type='text')
+						.row
+							.col-lg-1.col-lg-offset-1 培训需求
+							.col-lg-10: .row
+								- var spaces = ['请描述培训时段(具体到每天上下午各几小时)\n例如:26 上 3 小时,26 下 3 小时,27 下 3 小时\n简要描述工作事宜,如安装、理论培训、操作培训等', '培训总时长是否充分?\n不充分时请描述具体情况', '培训开始计划时间是否与计划时间一致?\n不一致时请描述原因\n请给出参与培训的我方人员姓名\n包括销售经理或经销商,没有则写无', '接受理论培训的人员有几人?', '理论培训讲解时间多长?', '接受实际培训的人员有几人?\n可能的话请写出姓名及联系方式', '以后专门使用这台设备的人是谁?\n请写出姓名及联系方式', '实际操作培训时间有多长?', '院方准备了多少受试人员?', '受试人员中有多少疑难病例?\n例如:肥胖、肋间隙窄等', '培训期间共检测了多少人次?\n一人次指单个受试人员进行一次完整的检测', '每位接受实操培训的人员检测了多少人次?\n例如:张医生 10 人次,李护士 12 人次', '每位接受实操培训的人员检测了多少疑难病例?\n例如:张医生 10 人次,李护士 12 人次', '每人检测的疑难病例最终是否检测成功?\n例如:张医生 10 人次,李护士 12 人次', '每位接受实操培训的人员的熟练程度如何?\n例如:熟练、基本掌握、生疏、无法判断', '每位接受实操培训的人员的主动性如何?\n例如:积极、一般、消极、抵触', '专门使用这台设备的人是否能够熟练掌握?\n如果不能,请阐明原因。\n例如:培训时间短、实操次数少、不愿意学等', '本次培训是否成功?\n培训怎样可以更好?'];
+								each q, i in spaces
+									.row
+										.col-lg-4
+											p(style='white-space:pre;')= q
+										.col-lg-6: textarea.form-control(id='fs2-f2-' + i, name='fs2-f2' + i, type='text', placeholder=q)
+						.row
+							.col-lg-1.col-lg-offset-1 其<br/>他<br/>客<br/>观<br/>情<br/>况<br/>描<br/>述
+							.col-lg-9: textarea#fs2-f3.form-control(name='fs2-f3', rows=7, type='text', placeholder='1.主要是指培训期间发生的,不包括在上面两项内容中的客观情况的描述;\n2.与客户互动的不在此处填写,填写在后面的客户互动情况描述;\n3.对本次培训的任何建议都可写在这里面;')
 					fieldset
 						legend.text-center 客户互动情况
+						.row
+							.col-lg-1.col-lg-offset-1 已<br/>解<br/>决<br/>问<br/>题<br/>描<br/>述
+							.col-lg-9: textarea#fs3-f1.form-control(name='fs3-f1', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出了客户表示满意或接受的答案。')
+						.row
+							.col-lg-1.col-lg-offset-1 未<br/>解<br/>决<br/>问<br/>题<br/>描<br/>述
+							.col-lg-9: textarea#fs3-f2.form-control(name='fs3-f2', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出答案客户不满意或者没有给出答案。\n客户的问题可以是关于产品、技术、医学、检测结果解读等方面的问题。')
+						.row
+							.col-lg-1.col-lg-offset-1 客<br/>户<br/>需<br/>求<br/>描<br/>述
+							.col-lg-9: textarea#fs3-f3.form-control(name='fs3-f3', rows=6, type='text', placeholder='主要是客户提出的需求,可以是关于软件、硬件、医学等方面的需求,需要后续给客户反馈的问题。')
+						.row
+							.col-lg-1.col-lg-offset-1 是<br/>否<br/>与<br/>医<br/>院<br/>负<br/>责<br/>人<br/>进<br/>行<br/>了<br/>沟<br/>通
+							.col-lg-9: textarea#fs3-f4.form-control(name='fs3-f4', rows=10, type='text', placeholder='是否与医院操作老师进行了沟通?是否已与销售经理指定的医院负责人进行了沟通?\n如没有沟通,请说明理由。')
+					fieldset
 						.form-group
-							label.col-md-2.control-label(for='fs2-f1') 主机序列号
-							.col-md-9: input#fs2-f1.form-control(name='fs2-f1', type='text')
+							label.col-md-2.control-label(for='fs4-f1') 附件
+							.col-md-9: input#fs4-f1.form-control(name='fs4-f1', type='text')
 					.form-group
 						.col-md-12.text-right.btn-toolbar
 							button#cancel.btn.btn-default(type='button') 取消
