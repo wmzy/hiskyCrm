@@ -1,98 +1,99 @@
 extends ../layouts/defualt
 
 block title
-   title 新建任务 - #{pkg.name}
+	title 新建任务 - #{pkg.name}
 
 block content
-   .row
-      .col-md-6.col-md-offset-3
-         .well.well-sm
-            form#form.form-horizontal(action='/machine/installation/task', method='post')
-               fieldset
-                  legend.text-center 新建装机任务
-                  input.hidden(name='_csrf' value=csrf_token)
-                  .form-group
-                     label.col-md-2.control-label(for='No') 关联编号
-                     .col-md-9
-                        input#No.form-control(name='No', type='text', placeholder='关联编号')
-                  .form-group
-                     label.col-md-2.control-label(for='customerName') 客户名称
-                     .col-md-9
-                        input#customerName.form-control(name='customerName', type='text', placeholder='客户名称')
-                  .form-group
-                     label.col-md-2.control-label(for='customerAddress') 客户地址
-                     .col-md-9
-                        input#customerAddress.form-control(name='customerAddress', type='text', placeholder='客户地址')
-                  .form-group
-                     label.col-md-2.control-label(for='task[from]') 开始时间
-                     .col-md-3
-                        ininput#from.form-control(name='task[from]', placeholder='开始时间')
-                     label.col-md-2.control-label(for='task[to]') 结束时间
-                     .col-md-3
-                        ininput#to.form-control(name='task[to]', placeholder='结束时间')
-                  .form-group
-                     .radio
-                        label
-                           input#optionsRadios1(type='radio', name='state', value='未开始', checked)
-                           | 暂不开始任务
-                        label
-                           input#optionsRadios1(type='radio', name='state', value='开始')
-                           | 直接开始任务
-                  .form-group
-                     .col-md-12.text-right.btn-toolbar
-                        button#cancel.btn.btn-default(type='button') 取消
-                        button#save.btn.btn-primary.btn-lg(type='submit') 新建
+	.row
+		.col-md-6.col-md-offset-3
+			.well.well-sm
+				form#form.form-horizontal(action='/machine/installation/task', method='post')
+					fieldset
+						legend.text-center 新建装机任务
+						input.hidden(name='_csrf' value=csrf_token)
+						.form-group
+							label.col-md-2.control-label(for='No') 关联编号
+							.col-md-10
+								input#No.form-control(name='No', type='text', placeholder='关联编号')
+						.form-group
+							label.col-md-2.control-label(for='customerName') 客户名称
+							.col-md-10
+								input#customerName.form-control(name='customerName', type='text', placeholder='客户名称')
+						.form-group
+							label.col-md-2.control-label(for='customerAddress') 客户地址
+							.col-md-10
+								input#customerAddress.form-control(name='customerAddress', type='text', placeholder='客户地址')
+						.form-group
+							label.col-md-2.control-label(for='task[from]') 开始时间
+							.col-md-4
+								input#from.form-control(name='task[from]', type='datetime-local', placeholder='开始时间')
+							label.col-md-2.control-label(for='task[to]') 结束时间
+							.col-md-4
+								input#to.form-control(name='task[to]', type='datetime-local', placeholder='结束时间')
+						.form-group
+							label.col-md-2.control-label 开始选项
+							.radio.col-md-10
+								label.col-md-6
+									input#optionsRadios1(type='radio', name='state', value='未开始', checked)
+									| 暂不开始任务
+								label.col-md-6
+									input#optionsRadios1(type='radio', name='state', value='开始')
+									| 直接开始任务
+						.form-group
+							.col-md-12.text-right.btn-toolbar
+								button#cancel.btn.btn-default(type='button') 取消
+								button#save.btn.btn-primary.btn-lg(type='submit') 新建
 
 block foot-script
-   script.
-      require(['jquery', 'selectize'], function ($) {
-         $(function () {
-            $('#cancel').click(function () {
-               if (history.length) {
-                  history.back();
-               } else {
-                  window.close();
-               }
-            });
-            $('#form').submit(function () {
-               $(this).find('[name="fields[][name]"]').each(function (i) {
-                  $(this).attr('name', 'fields[' + i + '][name]');
-               });
-               $(this).find('[name="fields[][type]"]').each(function (i) {
-                  $(this).attr('name', 'fields[' + i + '][type]');
-               });
-            });
+	script.
+		require(['jquery', 'selectize'], function ($) {
+			$(function () {
+				$('#cancel').click(function () {
+					if (history.length) {
+						history.back();
+					} else {
+						window.close();
+					}
+				});
+				$('#form').submit(function () {
+					$(this).find('[name="fields[][name]"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][name]');
+					});
+					$(this).find('[name="fields[][type]"]').each(function (i) {
+						$(this).attr('name', 'fields[' + i + '][type]');
+					});
+				});
 
-            $('#fields').on('click', '.removefield', function () {
-               $(this).parents('.form-group').remove();
-            });
-            $('#fields').on('click', '.addfield', function () {
-               $('#fieldtemplate')
-                       .clone()
-                       .removeAttr('id')
-                       .insertBefore($(this).parents('.form-group').first())
-                       .removeClass('hidden')
-                       .find('.selecttype')
-                       .first()
-                       .removeClass('selecttype')
-                       .selectize({
-                          maxItems: 1,
-                          valueField: 'name',
-                          labelField: 'name',
-                          earchField: ['name'],
-                          options: [
-                             {name: 'String'},
-                             {name: 'Number'},
-                             {name: 'Date'},
-                             {name: 'Buffer'},
-                             {name: 'Boolean'},
-                             {name: 'Mixed'},
-                             {name: 'Objectid'},
-                             {name: 'Array'}
-                          ],
-                          create: false
-                       });
-            });
-         });
-      });
+				$('#fields').on('click', '.removefield', function () {
+					$(this).parents('.form-group').remove();
+				});
+				$('#fields').on('click', '.addfield', function () {
+					$('#fieldtemplate')
+									.clone()
+									.removeAttr('id')
+									.insertBefore($(this).parents('.form-group').first())
+									.removeClass('hidden')
+									.find('.selecttype')
+									.first()
+									.removeClass('selecttype')
+									.selectize({
+										maxItems: 1,
+										valueField: 'name',
+										labelField: 'name',
+										earchField: ['name'],
+										options: [
+											{name: 'String'},
+											{name: 'Number'},
+											{name: 'Date'},
+											{name: 'Buffer'},
+											{name: 'Boolean'},
+											{name: 'Mixed'},
+											{name: 'Objectid'},
+											{name: 'Array'}
+										],
+										create: false
+									});
+				});
+			});
+		});
 
