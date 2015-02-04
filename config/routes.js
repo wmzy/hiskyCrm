@@ -5,6 +5,7 @@
 // Note: We can require users, articles and other cotrollers because we have
 // set the NODE_PATH to be ./app/controllers (package.json # scripts # start)
 
+var file = require('file');
 var users = require('users');
 var articles = require('articles');
 var comments = require('comments');
@@ -32,6 +33,13 @@ var commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
  */
 
 module.exports = function (app, passport) {
+
+	// user routes
+	app.get('/files', file.get);
+	app.get('/download', file.download);
+	app.post('/download', file.upload);
+	app.put('/download', file.update);
+	app.delete('/download', file.delete);
 
 	// user routes
 	app.get('/login', users.login);

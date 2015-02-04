@@ -22,6 +22,7 @@ var winston = require('winston');
 var helpers = require('view-helpers');
 var config = require('config');
 var pkg = require('../package.json');
+var uuid = require('node-uuid');
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -79,7 +80,17 @@ module.exports = function (app, passport) {
   // bodyParser should be above methodOverride
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(multer());
+  app.use(multer({
+	  dest: 'files',
+	  limits: {
+		  fieldNameSize: 100,
+		  files: 2,
+		  fields: 5
+	  },
+	  rename: function (fieldname, filename) {
+		  return uuid.v4().replace(/-/, '/');
+	  }
+  }));
   app.use(methodOverride(function (req) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       // look in urlencoded POST bodies and delete it
