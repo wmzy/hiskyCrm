@@ -37,9 +37,8 @@ module.exports = function (app, passport) {
 	// user routes
 	app.get('/files', file.get);
 	app.get('/download', file.download);
-	app.post('/download', file.upload);
-	app.put('/download', file.update);
-	app.delete('/download', file.delete);
+	app.post('/files/upload', file.upload);
+	app.delete('/files/remove/:path', file.delete);
 
 	// user routes
 	app.get('/login', users.login);

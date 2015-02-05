@@ -26,15 +26,15 @@ exports.get = function (req,res) {
 };
 
 exports.upload = function (req, res) {
-	var file = new File(req.body);
+	var file = new File(req.files[0]);
 
 	file.save(function (err) {
 		if (err) {
 			winston.error(err);
-			req.flash('err', err);
+			req.json(422, err);
 		}
 
-		res.redirect('/file');
+		res.json(file);
 	});
 };
 

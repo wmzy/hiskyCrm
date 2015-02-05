@@ -127,8 +127,10 @@ block content
 							.col-lg-9: textarea#fs3-f4.form-control(name='fs3-f4', rows=10, type='text', placeholder='是否与医院操作老师进行了沟通?是否已与销售经理指定的医院负责人进行了沟通?\n如没有沟通,请说明理由。')
 					fieldset
 						.form-group
+							input#files(type='hidden')
 							label.col-md-2.control-label(for='fs4-f1') 附件
-							.col-md-9: input#fs4-f1.form-control(name='fs4-f1', type='text')
+							.col-md-9
+								input#fs4-f1.form-control(name='fs4-f1', type='file' multiple)
 					.form-group
 						.col-md-12.text-right.btn-toolbar
 							button#cancel.btn.btn-default(type='button') 取消
@@ -145,6 +147,25 @@ block foot-script
 						window.close();
 					}
 				});
+
+				$('#fs4-f1').change(function() {
+					var files = $('#fs4-f1').get(0).files;
+					for (var i = 0; i < files.length; ++i) {
+						var fd = new FormData();
+						fd.append('file', files[i]);
+						$.ajax({
+							type: 'POST',
+							url: '/files/upload',
+							contentType: "multipart/form-data",
+							processData: false,
+							data: fd
+						}).done(function (msg) {
+							console.log(msg);
+						}).fail(function (err) {
+							console.log(err);
+						});
+					}
+				})
 			});
 		});
 

@@ -14,7 +14,7 @@ var ObjectId = Schema.Types.ObjectId;
 
 var FileSchema = new Schema({
 	name: {type: String, required: true},
-	description: {type: String, default: ''},
+	originalname: {type: String, default: ''},
 	members: [{type: ObjectId, ref: 'User'}],
 	roles: [{type: ObjectId, ref: 'Role'}]
 });

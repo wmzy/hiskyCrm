@@ -80,15 +80,15 @@ module.exports = function (app, passport) {
   // bodyParser should be above methodOverride
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(multer({
-	  dest: 'files',
+	app.use(/^(?!\/file)/, multer());
+  app.use('/file*', multer({
+	  dest: config.root + '/files',
 	  limits: {
-		  fieldNameSize: 100,
-		  files: 2,
-		  fields: 5
+		  files: 1,
+		  fields: 1
 	  },
-	  rename: function (fieldname, filename) {
-		  return uuid.v4().replace(/-/, '/');
+	  rename: function () {
+		  return uuid.v4().replace(/(..)(\w+)-(\w+)-(\w+)-(\w+)-(\w+)/, '$1/$2$3$4$5$6');
 	  }
   }));
   app.use(methodOverride(function (req) {
