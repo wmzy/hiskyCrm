@@ -156,7 +156,7 @@ block foot-script
 						$.ajax({
 							type: 'POST',
 							url: '/files/upload',
-							contentType: "multipart/form-data",
+							contentType: false,
 							processData: false,
 							data: fd
 						}).done(function (msg) {

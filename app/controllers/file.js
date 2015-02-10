@@ -26,12 +26,12 @@ exports.get = function (req,res) {
 };
 
 exports.upload = function (req, res) {
-	var file = new File(req.files[0]);
+	var file = new File(req.files.file);
 
 	file.save(function (err) {
 		if (err) {
 			winston.error(err);
-			req.json(422, err);
+			return res.json(422, err);
 		}
 
 		res.json(file);
