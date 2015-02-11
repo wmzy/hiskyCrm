@@ -33,7 +33,7 @@ var env = process.env.NODE_ENV || 'development';
 
 module.exports = function (app, passport) {
 
-	app.use(favicon(__dirname + '/public/favicon.ico'));
+	app.use(favicon(config.root + '/public/favicon.ico'));
 
 	// Compression middleware (should be placed before express.static)
 	app.use(compression({
