@@ -2,6 +2,8 @@
  * Module dependencies.
  */
 
+var winston = require('winston');
+
 // Note: We can require users, articles and other cotrollers because we have
 // set the NODE_PATH to be ./app/controllers (package.json # scripts # start)
 
@@ -34,11 +36,11 @@ var commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
 
 module.exports = function (app, passport) {
 
-	// user routes
+	// files routes
 	app.get('/files', file.get);
-	app.get('/download', file.download);
+	app.get('/download/:fileId', file.download);
 	app.post('/files/upload', auth.requiresLogin, file.upload);
-	app.delete('/files/remove/:path', file.delete);
+	app.delete('/files/remove/:fileId', file.delete);
 
 	// user routes
 	app.get('/login', users.login);
@@ -163,23 +165,25 @@ module.exports = function (app, passport) {
 			|| (~err.message.indexOf('Cast to ObjectId failed')))) {
 			return next();
 		}
-		console.error(err.stack);
+		winston.error(err.stack);
+		if (req.xhr) {
+			return res.status(500).json({err: 'server err'});
+		}
 		// error page
 		res.status(500).render('500', {error: err.stack});
 	});
 
 	// assume 404 since no middleware responded
 	app.use(function (req, res) {
+		if (req.xhr) {
+			return res.status(404).json({
+				url: req.originalUrl,
+				error: 'Not found'
+			});
+		}
 		res.status(404).render('404', {
 			url: req.originalUrl,
 			error: 'Not found'
 		});
-	});
-
-	app.use(function (isJson, err, req, res, next) {
-		console.log('123');
-		res.json(422, err);
-		return;
-		// next();
 	});
 };

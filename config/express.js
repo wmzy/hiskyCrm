@@ -3,6 +3,7 @@
  */
 'use strict';
 var express = require('express');
+var favicon = require('serve-favicon');
 var session = require('express-session');
 var compression = require('compression');
 var morgan = require('morgan');
@@ -31,6 +32,8 @@ var env = process.env.NODE_ENV || 'development';
  */
 
 module.exports = function (app, passport) {
+
+	app.use(favicon(__dirname + '/public/favicon.ico'));
 
 	// Compression middleware (should be placed before express.static)
 	app.use(compression({

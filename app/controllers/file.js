@@ -7,17 +7,24 @@ var utils = require('../../lib/utils');
 var extend = require('util')._extend;
 var winston = require('winston');
 var async = require('async');
+var fs = require('fs');
+var config = require('../../config/config');
 
 var File = mongoose.model('File');
 var User = mongoose.model('User');
 
 exports.download = function (req, res, next) {
-	File.find(function (err, data) {
-		if (err) {
-			winston.error(err);
-			return next(err);
-		}
-		res.render('file/index', {files: data});
+	File.findById(req.params.fileId, function (err, file) {
+		if (err) return next(err);
+
+		res.download(config.root + '/files/' + file.name, file.originalname, function (err) {
+			if (err) {
+				winston.error(err);
+				if (!res.headersSent) {
+					next(err);
+				}
+			}
+		});
 	});
 };
 
@@ -25,13 +32,13 @@ exports.get = function (req,res) {
 	res.render('file/new');
 };
 
-exports.upload = function (req, res) {
+exports.upload = function (req, res, next) {
 	var file = new File(req.files.file);
 
 	file.save(function (err) {
 		if (err) {
-			winston.error(err);
-			return res.json(422, err);
+			fs.unlink(config.root + '/files/' + file.name);
+			return next(err);
 		}
 
 		res.json(file);
@@ -44,10 +51,7 @@ exports.edit = function (req, res, next) {
 	}, function (callback) {
 		File.findById(req.params.fileId, callback);
 	}], function (err, results) {
-		if (err) {
-			winston.error(err);
-			return next(err);
-		}
+		if (err) return next(err);
 
 		res.render('file/edit', {file: results[1], users: results[0]});
 	});
@@ -55,10 +59,7 @@ exports.edit = function (req, res, next) {
 
 exports.update = function (req, res, next) {
 	File.findById(req.params.fileId, function (err, file) {
-		if (err) {
-			winston.error(err);
-			return next(err);
-		}
+		if (err) return next(err);
 
 		file = extend(file, req.body);
 		file.save(function (err) {
@@ -72,14 +73,12 @@ exports.update = function (req, res, next) {
 	});
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, next) {
 	File.findByIdAndRemove(req.params.fileId)
-		.exec(function (err) {
-			if (err) {
-				winston.error(err);
-				return res.json(422, err);
-			}
+		.exec(function (err, file) {
+			if (err) return next(err);
 
+			fs.unlink(file.name);
 			res.json(200);
 		});
 };
