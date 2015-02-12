@@ -27,6 +27,19 @@ exports.newLog = function (req, res) {
 	res.render('installation/newLog', {_id: req.params.installationId});
 };
 
+exports.viewLog = function (req, res, next) {
+	Installation.findById(req.params.installationId, function (err, installation) {
+		if (err) {
+			return next(err);
+		}
+		if (!installation.log) {
+			return next(new Error('not found'));
+		}
+
+		res.render('installation/viewLog', installation.log);
+	});
+};
+
 exports.addLog = function (req, res, next) {
 	Installation.findById(req.params.installationId, function (err, installation) {
 		if (err) {
@@ -34,7 +47,7 @@ exports.addLog = function (req, res, next) {
 			return next(err);
 		}
 
-		installation = extend(installation, req.body);
+		installation.log = extend(installation.log, req.body);
 		installation.state = '完成';
 		installation.task.to = new Date();
 		installation.save(function (err) {
@@ -43,7 +56,7 @@ exports.addLog = function (req, res, next) {
 				req.flash('err', err);
 			}
 
-			res.redirect('/installation');
+			res.redirect('/machine/installation/task');
 		});
 	});
 };
@@ -100,7 +113,7 @@ exports.updateTask = function (req, res, next) {
 	});
 };
 
-exports.startTask = function (req, res) {
+exports.startTask = function (req, res, next) {
 	async.waterfall([function (callback) {
 		Installation.findById(req.params.taskId, callback);
 	}, function (installation, callback) {
@@ -112,16 +125,14 @@ exports.startTask = function (req, res) {
 		installation.save(callback);
 	}], function (err, installation) {
 		if (err) {
-			winston.error(err);
-			return res.json(422, err);
+			return next(err);
 		}
-		console.log(installation);
 
 		res.json(installation);
 	});
 };
 
-exports.deleteTask = function (req, res) {
+exports.deleteTask = function (req, res, next) {
 	async.waterfall([function (callback) {
 		Installation.findById(req.params.taskId, callback);
 	}, function (installation, callback) {
@@ -131,20 +142,18 @@ exports.deleteTask = function (req, res) {
 		installation.remove(callback);
 	}], function (err) {
 		if (err) {
-			winston.error(err);
-			return res.json(422, err);
+			return next(err);
 		}
 
 		res.json(200);
 	});
 };
 
-exports.delete = function (req, res) {
+exports.delete = function (req, res, next) {
 	Installation.findByIdAndRemove(req.params.installationId)
 		.exec(function (err) {
 			if (err) {
-				winston.error(err);
-				return res.json(422, err);
+				return next(err);
 			}
 
 			res.json(200);

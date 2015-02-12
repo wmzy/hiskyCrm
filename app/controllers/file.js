@@ -19,9 +19,9 @@ exports.download = function (req, res, next) {
 
 		res.download(config.root + '/files/' + file.name, file.originalname, function (err) {
 			if (err) {
-				winston.error(err);
+				winston.log(err);
 				if (!res.headersSent) {
-					next(err);
+					return next(new Error('not found'));
 				}
 			}
 		});

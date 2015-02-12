@@ -40,7 +40,8 @@ block foot-script
 	script.
 		require(['jquery'], function ($) {
 			$(function () {
-				$('tbody').on('click', '.btn-danger', function () {
+				var $tbody = $('tbody');
+				$tbody.on('click', '.btn-danger', function () {
 					var $self = $(this);
 					$.ajax({
 						type: 'DELETE',
@@ -54,10 +55,15 @@ block foot-script
 					});
 				});
 
-				$('tbody').on('click', '.btn-info', function () {
+				$tbody.on('click', '.btn-info', function () {
 					var $self = $(this);
 					if ($self.text() === '提交日志') {
 						location.href = '/machine/installation/log/' + $self.parent().data('id');
+						return;
+					}
+
+					if ($self.text() === '查看日志') {
+						location.href = '/machine/installation/log/of/' + $self.parent().data('id');
 						return;
 					}
 					$.ajax({

@@ -40,7 +40,7 @@ module.exports = function (app, passport) {
 	app.get('/files', file.get);
 	app.get('/download/:fileId', file.download);
 	app.post('/files/upload', auth.requiresLogin, file.upload);
-	app.delete('/files/remove/:fileId', file.delete);
+	app.delete('/files/:fileId', file.delete);
 
 	// user routes
 	app.get('/login', users.login);
@@ -101,6 +101,7 @@ module.exports = function (app, passport) {
 	app.put('/machine/installation/task/start/:taskId', installation.startTask);
 	app.delete('/machine/installation/task/:taskId', installation.deleteTask);
 	app.get('/machine/installation/log/:installationId', installation.newLog);
+	app.get('/machine/installation/log/of/:installationId', installation.viewLog);
 	app.put('/machine/installation/log/:installationId', installation.addLog);
 
 	// schema routes
