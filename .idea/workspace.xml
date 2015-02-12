@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="15228826-4643-47a8-b6b4-2d58f7aeec3e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/views/installation/viewLog.jade" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/Installation.js" afterPath="$PROJECT_DIR$/app/models/Installation.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/file.js" afterPath="$PROJECT_DIR$/app/controllers/file.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/installation.js" afterPath="$PROJECT_DIR$/app/controllers/installation.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/installation/newLog.jade" afterPath="$PROJECT_DIR$/app/views/installation/newLog.jade" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/routes.js" afterPath="$PROJECT_DIR$/config/routes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/installation/task.jade" afterPath="$PROJECT_DIR$/app/views/installation/task.jade" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
     </list>
     <ignored path="hiskyCrm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,16 +34,6 @@
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="header.jade" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/views/includes/header.jade">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="79" max-vertical-offset="990">
-              <caret line="42" column="24" selection-start-line="42" selection-start-column="24" selection-end-line="42" selection-end-column="24" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -116,11 +98,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="viewLog.jade" pinned="false" current-in-tab="true">
+      <file leaf-file-name="viewLog.jade" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/installation/viewLog.jade">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3492">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.13830955" vertical-offset="0" max-vertical-offset="911">
+              <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -144,7 +136,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/views/includes/requirejs.jade" />
         <option value="$PROJECT_DIR$/app/views/organization/index.jade" />
         <option value="$PROJECT_DIR$/app/models/OrganizationNode.js" />
         <option value="$PROJECT_DIR$/app/views/group/new.jade" />
@@ -195,6 +186,7 @@
         <option value="$PROJECT_DIR$/config/routes.js" />
         <option value="$PROJECT_DIR$/app/controllers/installation.js" />
         <option value="$PROJECT_DIR$/app/views/installation/viewLog.jade" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -511,13 +503,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/views/includes/head.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/js/lib/jquery-ui.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="298566">
@@ -877,6 +862,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="910">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13830955" vertical-offset="0" max-vertical-offset="911">
+          <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
           <folding />
         </state>
       </provider>
