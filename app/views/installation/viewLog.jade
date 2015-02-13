@@ -3,75 +3,76 @@ extends ../layouts/defualt
 block title
 	title 新建装机日志 - #{pkg.name}
 
+block main
+	h2 装机日志
+
 block content
 	.row
 		.col-md-10.col-md-offset-1
 			.well.well-lg
 				form#form.form-horizontal(action='/machine/installation/log/' + _id, method='post')
-					input.hidden(name='_csrf' value=csrf_token)
-					input.hidden(name='_method' value='put')
 					fieldset
 						legend.text-center 培训情况描述
 						.form-group
 							label.col-md-2.control-label(for='fs1-f1') 客户名称
 							.col-md-9
-								input#fs1-f1.form-control(name='fs1_f1', type='text')
+								input#fs1-f1.form-control(readonly, value=log['fs1_f1'], name='fs1_f1', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f2') 客户地址
 							.col-md-9
-								input#fs1-f2.form-control(name='fs1_f2', type='text')
+								input#fs1-f2.form-control(readonly, value=log['fs1_f2'], name='fs1_f2', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f3') 安装科室
 							.col-md-9
-								input#fs1-f3.form-control(name='fs1_f3', type='text')
+								input#fs1-f3.form-control(readonly, value=log['fs1_f3'], name='fs1_f3', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f4') 操 作 人
 							.col-md-9
-								input#fs1-f4.form-control(name='fs1_f4', type='text')
+								input#fs1-f4.form-control(readonly, value=log['fs1_f4'], name='fs1_f4', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f5') 联系方式
 							.col-md-9
-								input#fs1-f5.form-control(name='fs1_f5', type='text')
+								input#fs1-f5.form-control(readonly, value=log['fs1_f5'], name='fs1_f5', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f6') 主 任
 							.col-md-9
-								input#fs1-f6.form-control(name='fs1_f6', type='text')
+								input#fs1-f6.form-control(readonly, value=log['fs1_f6'], name='fs1_f6', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f7') 联系方式
 							.col-md-9
-								input#fs1-f7.form-control(name='fs1_f7', type='text')
+								input#fs1-f7.form-control(readonly, value=log['fs1_f7'], name='fs1_f7', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f8') 设备类型
 							.col-md-9
-								input#fs1-f8.form-control(name='fs1_f8', type='text')
+								input#fs1-f8.form-control(readonly, value=log['fs1_f8'], name='fs1_f8', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f9') 主机序列号
 							.col-md-9
-								input#fs1-f9.form-control(name='fs1_f9', type='text')
+								input#fs1-f9.form-control(readonly, value=log['fs1_f9'], name='fs1_f9', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f10') 软件版本
 							.col-md-9
-								input#fs1-f10.form-control(name='fs1_f10', type='text')
+								input#fs1-f10.form-control(readonly, value=log['fs1_f10'], name='fs1_f10', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f11') E 超探头序列号
 							.col-md-9
-								input#fs1-f11.form-control(name='fs1_f11', type='text')
+								input#fs1-f11.form-control(readonly, value=log['fs1_f11'], name='fs1_f11', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f12') 接口类型
 							.col-md-9
-								input#fs1-f12.form-control(name='fs1_f12', type='text')
+								input#fs1-f12.form-control(readonly, value=log['fs1_f12'], name='fs1_f12', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f13') B 超探头序列号
 							.col-md-9
-								input#fs1-f13.form-control(name='fs1_f13', type='text')
+								input#fs1-f13.form-control(readonly, value=log['fs1_f13'], name='fs1_f13', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f14') 脚踏接口类型
 							.col-md-9
-								input#fs1-f14.form-control(name='fs1_f14', type='text')
+								input#fs1-f14.form-control(readonly, value=log['fs1_f14'], name='fs1_f14', type='text')
 						.form-group
 							label.col-md-2.control-label(for='fs1-f15') 当地销售经理
 							.col-md-9
-								input#fs1-f15.form-control(name='fs1_f15', type='text')
+								input#fs1-f15.form-control(readonly, value=log['fs1_f15'], name='fs1_f15', type='text')
 					fieldset
 						legend.text-center 培训情况描述
 						.row
@@ -81,24 +82,24 @@ block content
 									.col-lg-4
 										h5 是否有固定的专门的场地放置设备?
 										h5 如果没有,设备放在何处?
-									.col-lg-6: textarea#fs2-f1-1.form-control(name='fs2_f1_1', type='text')
+									.col-lg-6: textarea#fs2-f1-1.form-control(readonly, value=log['fs2_f1_1'], name='fs2_f1_1', type='text')
 								.row
 									.col-lg-4
 										h5 是否有合适高度的检测床?
-									.col-lg-6: textarea#fs2-f1-2.form-control(name='fs2_f1_2', type='text')
+									.col-lg-6: textarea#fs2-f1-2.form-control(readonly, value=log['fs2_f1_2'], name='fs2_f1_2', type='text')
 								.row
 									.col-lg-4
 										h5 是否有合适高度的检测椅?
-									.col-lg-6: textarea#fs2-f1-3.form-control(name='fs2_f1_3', type='text')
+									.col-lg-6: textarea#fs2-f1-3.form-control(readonly, value=log['fs2_f1_3'], name='fs2_f1_3', type='text')
 								.row
 									.col-lg-4
 										h5 是否有单独足够的空间可以放置设备和检测床?
 										h5 面积多大?
-									.col-lg-6: textarea#fs2-f1-4.form-control(name='fs2_f1_4', type='text')
+									.col-lg-6: textarea#fs2-f1-4.form-control(readonly, value=log['fs2_f1_4'], name='fs2_f1_4', type='text')
 								.row
 									.col-lg-4
 										h5 是否有可靠接地的电源?
-									.col-lg-6: textarea#fs2-f1-5.form-control(name='fs2_f1_5', type='text')
+									.col-lg-6: textarea#fs2-f1-5.form-control(readonly, value=log['fs2_f1_5'], name='fs2_f1_5', type='text')
 						.row
 							.col-lg-1.col-lg-offset-1 培训需求
 							.col-lg-10: .row
@@ -107,82 +108,29 @@ block content
 									.row
 										.col-lg-4
 											p(style='white-space:pre;')= q
-										.col-lg-6: textarea.form-control(id='fs2-f2-' + i, name='fs2_f2_' + i, type='text', placeholder=q)
+										.col-lg-6: textarea.form-control(id='fs2-f2-' + i, readonly, value=log['fs2_f2_' + i], name='fs2_f2_' + i, type='text', placeholder=q)
 						.row
 							.col-lg-1.col-lg-offset-1 其<br/>他<br/>客<br/>观<br/>情<br/>况<br/>描<br/>述
-							.col-lg-9: textarea#fs2-f3.form-control(name='fs2_f3', rows=7, type='text', placeholder='1.主要是指培训期间发生的,不包括在上面两项内容中的客观情况的描述;\n2.与客户互动的不在此处填写,填写在后面的客户互动情况描述;\n3.对本次培训的任何建议都可写在这里面;')
+							.col-lg-9: textarea#fs2-f3.form-control(readonly, value=log['fs2_f3'], name='fs2_f3', rows=7, type='text', placeholder='1.主要是指培训期间发生的,不包括在上面两项内容中的客观情况的描述;\n2.与客户互动的不在此处填写,填写在后面的客户互动情况描述;\n3.对本次培训的任何建议都可写在这里面;')
 					fieldset
 						legend.text-center 客户互动情况
 						.row
 							.col-lg-1.col-lg-offset-1 已<br/>解<br/>决<br/>问<br/>题<br/>描<br/>述
-							.col-lg-9: textarea#fs3-f1.form-control(name='fs3_f1', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出了客户表示满意或接受的答案。')
+							.col-lg-9: textarea#fs3-f1.form-control(readonly, value=log['fs3_f1'], name='fs3_f1', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出了客户表示满意或接受的答案。')
 						.row
 							.col-lg-1.col-lg-offset-1 未<br/>解<br/>决<br/>问<br/>题<br/>描<br/>述
-							.col-lg-9: textarea#fs3-f2.form-control(name='fs3_f2', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出答案客户不满意或者没有给出答案。\n客户的问题可以是关于产品、技术、医学、检测结果解读等方面的问题。')
+							.col-lg-9: textarea#fs3-f2.form-control(readonly, value=log['fs3_f2'], name='fs3_f2', rows=7, type='text', placeholder='主要是指客户提出的问题,装机人员给出答案客户不满意或者没有给出答案。\n客户的问题可以是关于产品、技术、医学、检测结果解读等方面的问题。')
 						.row
 							.col-lg-1.col-lg-offset-1 客<br/>户<br/>需<br/>求<br/>描<br/>述
-							.col-lg-9: textarea#fs3-f3.form-control(name='fs3_f3', rows=6, type='text', placeholder='主要是客户提出的需求,可以是关于软件、硬件、医学等方面的需求,需要后续给客户反馈的问题。')
+							.col-lg-9: textarea#fs3-f3.form-control(readonly, value=log['fs3_f3'], name='fs3_f3', rows=6, type='text', placeholder='主要是客户提出的需求,可以是关于软件、硬件、医学等方面的需求,需要后续给客户反馈的问题。')
 						.row
 							.col-lg-1.col-lg-offset-1 是<br/>否<br/>与<br/>医<br/>院<br/>负<br/>责<br/>人<br/>进<br/>行<br/>了<br/>沟<br/>通
-							.col-lg-9: textarea#fs3-f4.form-control(name='fs3_f4', rows=10, type='text', placeholder='是否与医院操作老师进行了沟通?是否已与销售经理指定的医院负责人进行了沟通?\n如没有沟通,请说明理由。')
+							.col-lg-9: textarea#fs3-f4.form-control(readonly, value=log['fs3_f4'], name='fs3_f4', rows=10, type='text', placeholder='是否与医院操作老师进行了沟通?是否已与销售经理指定的医院负责人进行了沟通?\n如没有沟通,请说明理由。')
 					fieldset
 						legend.text-center 附件
 						.row
 							.col-lg-9.col-lg-offset-2
 								ul#attachments
-						.form-group
-							label.col-md-2.control-label 附件
-							.col-md-9
-								input#fileAdd.form-control(type='file' multiple)
-					.form-group
-						.col-md-12.text-right.btn-toolbar
-							button#cancel.btn.btn-default(type='button') 取消
-							button#save.btn.btn-primary.btn-lg(type='submit') 新建
-
-block foot-script
-	script.
-		require(['jquery', 'selectize'], function ($) {
-			$(function () {
-				$('#cancel').click(function () {
-					if (history.length) {
-						history.back();
-					} else {
-						window.close();
-					}
-				});
-
-				$('#fs4-f1').change(function() {
-					var $fileAdd = $('#fileAdd');
-					var files = $fileAdd.get(0).files;
-					var $attachments = $('#attachments');
-					for (var i = 0; i < files.length; ++i) {
-						var fd = new FormData();
-						fd.append('file', files[i]);
-						$.ajax({
-							type: 'POST',
-							url: '/files/upload',
-							contentType: false,
-							processData: false,
-							data: fd
-						}).done(function (file) {
-							console.log(file);
-							$attachments.append('<li>' + file.originalname + '<a>删除</a><input name="attachments[]" type="hidden"  value="' + file._id + '"/></li>');
-						}).fail(function (jqXHR) {
-							console.log(jqXHR);
-						});
-					}
-					$fileAdd.val(null);
-				})
-
-				$('#attachments').on('click', 'a', function () {
-					var $this = $(this);
-					$.ajax({
-						type: 'DELETE',
-						url: '/files/' + $this.next().val()
-					}).done(function () {
-						$this.parent().remove();
-					});
-				});
-			});
-		});
+									each att in log.attachments
+										li: a(href='/download/' + att._id)= att.originalname
 

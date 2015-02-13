@@ -65,6 +65,7 @@ var InstallationSchema = new Schema({
 		fs2_f2_15: {type: String, default: ''},
 		fs2_f2_16: {type: String, default: ''},
 		fs2_f2_17: {type: String, default: ''},
+		fs2_f3: {type: String, default: ''},
 		fs3_f1: {type: String, default: ''},
 		fs3_f2: {type: String, default: ''},
 		fs3_f3: {type: String, default: ''},

@@ -28,7 +28,9 @@ exports.newLog = function (req, res) {
 };
 
 exports.viewLog = function (req, res, next) {
-	Installation.findById(req.params.installationId, function (err, installation) {
+	Installation.findById(req.params.installationId)
+		.populate('log.attachments','originalname')
+		.exec(function (err, installation) {
 		if (err) {
 			return next(err);
 		}
@@ -36,7 +38,7 @@ exports.viewLog = function (req, res, next) {
 			return next(new Error('not found'));
 		}
 
-		res.render('installation/viewLog', installation.log);
+		res.render('installation/viewLog', {log: installation.log});
 	});
 };
 
